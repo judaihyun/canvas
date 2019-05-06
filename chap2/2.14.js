@@ -94,7 +94,7 @@ function drawAxes() {
    context.lineWidth = TICKS_LINEWIDTH;
    context.strokeStyle = TICKS_COLOR;
 
-//   drawVerticalAxisTicks();
+   drawVerticalAxisTicks();
    drawHorizontalAxisTicks();
 
    context.restore();
