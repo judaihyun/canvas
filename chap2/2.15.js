@@ -7,11 +7,14 @@ document.addEventListener('DOMContentLoaded', function(){
         eraseAllButton = document.getElementById('eraseAllButton'),
         strokeStyleSelect = document.getElementById('strokeStyleSelect'),
         guidewireCheckbox = document.getElementById('guidewireCheckbox'),
+        circleCheckBox = document.getElementById('circleCheckbox'), 
         drawingSurfaceImageData,
         mousedown = {},
+        loc = {},
         rubberbandRect = {},
         dragging = false,
-        guidewires = guidewireCheckbox.checked;
+        guidewires = guidewireCheckbox.checked,
+        circleMode = circleCheckBox.checked;
 
         function drawGrid(color, stepx, stepy)
         {
@@ -39,6 +42,22 @@ document.addEventListener('DOMContentLoaded', function(){
             context.restore();
         }
 
+        function drawVerticalLine(x)
+        {
+            context.beginPath();
+            context.moveTo(x+0.5, 0);
+            context.lineTo(x+0.5, context.canvas.height);
+            context.stroke();
+        }
+
+        function drawHorizontalLine(y)
+        {
+            context.beginPath();
+            context.moveTo(0, y + 0.5);
+            context.lineTo(context.canvas.width, y + 0.5);
+            context.stroke();
+        }
+
         function windowToCanvas(x, y)
         {
             var bbox = canvas.getBoundingClientRect();
@@ -58,15 +77,44 @@ document.addEventListener('DOMContentLoaded', function(){
 
         function updateRubberbandRectangle(loc)
         {
-           rubberbandRect.width = Math.abs(loc.x - mousedown.x); 
-           rubberbandRect.height = Math.abs(loc.y - mousedown.y); 
+            rubberbandRect.width  = Math.abs(loc.x - mousedown.x);
+            rubberbandRect.height = Math.abs(loc.y - mousedown.y);
+            
+            if (loc.x > mousedown.x) rubberbandRect.left = mousedown.x;
+            else                     rubberbandRect.left = loc.x;
 
-           if(loc.x > mousedown.x) rubberbandRect.left = mousedown.x;
-           else                    rubberbandRect.left = loc.x;
+            if (loc.y > mousedown.y) rubberbandRect.top = mousedown.y;
+            else                     rubberbandRect.top = loc.y;
+        }
 
-           if(loc.y > mousedown.y) rubberbandRect.top = mousedown.y;
-           else                    rubberbandRect.top = loc.y;
-;
+        function drawRubberbandCircleShape(loc) 
+        {
+            var angle,
+                radius;
+         
+            if (mousedown.y === loc.y) { // horizontal line
+               // Horizontal lines are a special case. See the else
+               // block for an explanation
+               
+               radius = Math.abs(loc.x - mousedown.x);
+            }
+            else {
+               // For horizontal lines, the angle is 0, and Math.sin(0)
+               // is 0, which means we would be dividing by 0 here to get NaN
+               // for radius. The if block above catches horizontal lines.
+         
+               angle = Math.atan(rubberbandRect.height/rubberbandRect.width),
+               radius = rubberbandRect.height / Math.sin(angle);
+            }
+         
+            context.beginPath();
+            context.arc(mousedown.x, mousedown.y, radius, 0, Math.PI*2, false); 
+            context.stroke();
+         
+            /*
+            if (circleCheckBox.checked)
+               context.fill();
+            */
         }
 
         function drawRubberbandShape(loc)
@@ -83,32 +131,12 @@ document.addEventListener('DOMContentLoaded', function(){
             drawRubberbandShape(loc);
         }
 
-        function drawVerticalLine(x)
+        function updateCircle(loc)
         {
-            context.beginPath();
-            context.moveTo(x+0.5, 0);
-            context.lineTo(x+0.5, context.canvas.height);
-            context.stroke();
+            updateRubberbandRectangle(loc);
+            drawRubberbandCircleShape(loc);
         }
-
-        function drawHorizontalLine(y)
-        {
-            context.beginPath();
-            context.moveTo(0, y + 0.5);
-            context.lineTo(context.canvas.width, y + 0.5);
-            context.stroke();
-        }
-
-        function drawGuidRect()
-        {
-            context.save();
-            context.beginPath();
-            context.strokeStyle = 'red';
-            context.rect(mousedown.x, mousedown.y, rubberbandRect.width, rubberbandRect.height);
-            context.stroke()
-            context.restore();
-        }
-
+       
         function drawGuidewires(x, y)
         {
             context.save();
@@ -119,9 +147,19 @@ document.addEventListener('DOMContentLoaded', function(){
             context.restore();
         }
 
+        function drawGuidRect()
+        {
+            context.save();
+            context.beginPath();
+            context.strokeStyle = 'red';
+            context.rect(rubberbandRect.left, rubberbandRect.top, rubberbandRect.width, rubberbandRect.height);
+            context.stroke();
+            context.restore();
+        }
+
         canvas.addEventListener('mousedown', function(e){
             var loc = windowToCanvas(e.clientX, e.clientY);
-           
+
             e.preventDefault();
             saveDrawingSurface();
             mousedown.x = loc.x;
@@ -135,8 +173,20 @@ document.addEventListener('DOMContentLoaded', function(){
             {
                 e.preventDefault();
                 loc = windowToCanvas(e.clientX, e.clientY);
+
                 restoreDrawingSurface();
-                updateRubberband(loc);
+
+                if(circleMode)
+                {
+                    console.log('circleMode');
+                    updateCircle(loc);
+                }
+                else
+                {
+                    console.log('rectMode');
+                    restoreDrawingSurface();
+                    updateRubberband(loc);
+                }
 
                 if(guidewires){
                     drawGuidewires(loc.x, loc.y);
@@ -149,12 +199,21 @@ document.addEventListener('DOMContentLoaded', function(){
         canvas.addEventListener('mouseup', function(e){
             loc = windowToCanvas(e.clientX, e.clientY);
             restoreDrawingSurface();
-            updateRubberband(loc);
+            if(circleMode)
+            {
+                updateCircle(loc);
+            }else{
+                updateRubberband(loc);
+            }
             dragging = false;
         },false);
 
         guidewireCheckbox.addEventListener('change',function(e){
             guidewires = guidewireCheckbox.checked;
+        },false);
+
+        circleCheckBox.addEventListener('change', function(){
+            circleMode = circleCheckBox.checked;
         },false);
 
         strokeStyleSelect.onchange = function(e){
@@ -167,10 +226,20 @@ document.addEventListener('DOMContentLoaded', function(){
             saveDrawingSurface();
         }
 
-
-
         context.strokeStyle = strokeStyleSelect.value;
         drawGrid('lightgray', 10, 10);
+        /*
+        context.beginPath();
+        context.arc(300, 200, 120, 0, Math.PI*2);
+        context.moveTo(250, 170);
+        context.arc(240, 170, 10, 0, Math.PI*2);
 
+        context.moveTo(360, 170);
+        context.arc(350, 170, 10, 0, Math.PI*2);
+
+        context.moveTo(400, 190);
+        context.arc(300, 190, 100, 0, Math.PI);
+        context.stroke();
+        */
 
 },false);
