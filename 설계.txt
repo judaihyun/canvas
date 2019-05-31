@@ -1,0 +1,44 @@
+
+
+
+
+
+
+- config 
+type : object
+
+configuration 형식 
+
+type: 'line',  -> 일단 line만
+data: 
+{
+	labels: ['jan','feb'],
+	datasets: [
+	{
+		data:[0,1],
+	}]	
+},
+options:{
+	~~~
+}
+
+
+data : object
+: only one
+
+datasets : array like object
+: datasets[n] 을 갖음.
+
+datasets.data : array
+: datasets[n].data 
+
+options : object
+:
+
+
+procedure : 
+
+1. contextValidator(ctx, config) : 
+2. initConfig() : 
+3. initalize()
+-> 3-1. initCanvas();
