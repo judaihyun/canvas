@@ -98,23 +98,16 @@ let config =
         return config;
     };
 
-    function bindEvent()
-    {
-        window.addEventListener('resize',function(e){
-            var inWidth = e.target.innerWidth;
-            var inHeight = e.target.innerHeight;
-            console.log(`width : ${inWidth}, height : ${inHeight}`);
-        },false);
-    }
+   
 
     function initCanvas(ctx, config)
     {
         ctx.save();
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 0.5;
-        console.log(window.innerHeight);
-        console.log(ctx.canvas.width);
-        console.log(ctx.canvas.height);
+        
+        console.log('window.innerHeight : ' + window.innerHeight + ', window.innerWidth : ' + window.innerWidth);
+        console.log('canvas.width : ' + ctx.canvas.width + ', canvas.height : ' + ctx.canvas.height);
         for(let i = 0.5; i < ctx.canvas.width; i += 10)
         {
             ctx.beginPath();
@@ -137,7 +130,8 @@ let config =
     let JChart = function(item, config)
     {
         this.construct(item, config);
-	    return this;
+        this.bindEvent();
+        return this;
     };
 
     JChart.prototype.construct = function(item, config)
@@ -146,6 +140,7 @@ let config =
         this.canvas = item.canvas;
         this.config = initConfig(config);
         this.initialize();
+        this.resizeEvent = new Event('resizeEvt');
         //update();
     };
 
@@ -153,9 +148,28 @@ let config =
     {
         initCanvas(this.ctx, this.config);
         helper.saveDrawingSurface(this.ctx);
-        bindEvent();
     };
 
+    JChart.prototype.resizeCanvas = function(size)
+    {
+        console.log(`width : ${size.detail.inWidth}, height : ${size.detail.inHeight}`);
+        this.canvas.width = size.detail.inWidth;
+        this.canvas.height = size.detail.inHeight - 300;
+        initCanvas(this.ctx, this.config);
+    }
+
+    JChart.prototype.bindEvent = function()
+    {
+        document.addEventListener('resizeEvt', this.resizeCanvas.bind(this));
+
+        window.addEventListener('resize',function(e){
+            var size = {
+                inWidth : e.target.innerWidth,
+                inHeight : e.target.innerHeight
+            }
+            document.dispatchEvent(new CustomEvent('resizeEvt', {detail:size}));
+        },false);
+    }
 
     window.JChart = JChart;
 
@@ -168,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function()
     let ctx = canvas.getContext('2d');
 
     let myChart = new JChart(ctx, config);
+
     //let chart = new Chart(ctx, config);
 
 },false);
