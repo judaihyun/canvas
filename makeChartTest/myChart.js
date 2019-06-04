@@ -3,9 +3,7 @@ let config =
 {
     type:'line',
     data:{
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         datasets: [{
-            data:[1,2,-3,4],
             backgroundColor: [
             ],
             borderColor: [
@@ -15,6 +13,14 @@ let config =
     },
     options:{
         responsive:true,
+        layout: {
+            padding: {
+                top: 40.5,
+				right: 0,
+				bottom: 40.5,
+				left: 50.5 
+            }
+        },
         scales: {
             xAxes: [{
                 display: true,
@@ -53,7 +59,12 @@ let config =
         defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
         defaultFontSize: 12,
         defaultFontStyle: 'normal',
-        defaultLineHeight: 1.2
+        defaultLineHeight: 1.2,
+        titleFontStyle: 'bold',
+		titleSpacing: 2,
+		titleMarginBottom: 6,
+		titleFontColor: '#fff',
+		titleAlign: 'left',
     };
 
     let SIZE = {
@@ -77,28 +88,42 @@ let config =
             intersect: true,
             animationDuration: 400
         },
+        layout: {
+			padding: {
+				top: 0.5,
+				right: 0,
+				bottom: 0.5,
+				left: 0.5
+			}
+		},
         onClick: null,
         maintainAspectRatio: true,
         responsive: true,
         responsiveAnimationDuration: 0
     };
 
+    let computedOptions = {
+        layout : {
+            bottomLable : { }
+        }
+    };
+
     let Helper = 
     {
-        baseCanvasImage : null,
-        property : {},
         isExist(value)
         {
             if(typeof value === 'undefined' && !value) return false;
             return true;
         },
-        initConfig(config)
+        initConfig(ctx, config)
         {
             if(!Helper.isExist(config.options))
             {
                 config.options = defaultsOptions;
             }
-            
+            //TODO make computedOptions
+            computedOptions = Object.assign(computedOptions, config.options );
+          
             return config;
         },
         contextValidator(item, config)
@@ -117,105 +142,140 @@ let config =
         },
         resizeForResponsive(ctx)
         {
+            console.warn('resizeForResponsive on');
             ctx.canvas.width = window.innerWidth,
             ctx.canvas.height = (ctx.canvas.width / 21)*9;  // aspect ratio 21:9
             //console.log('window.innerHeight : ' + window.innerHeight + ', window.innerWidth : ' + window.innerWidth);
             //console.log('canvas.width : ' + ctx.canvas.width + ', canvas.height : ' + ctx.canvas.height);
-            initCanvas(ctx, config);
+            Helper.computeSize(ctx);
+            Draw.baseCanvas(config);
+        },
+        computeSize(ctx)
+        {
+            if(computedOptions.layout.padding)
+            {
+                computedOptions.layout.chartWidth = ctx.canvas.width -
+                                                computedOptions.layout.padding.left- 
+                                                computedOptions.layout.padding.right;
+                computedOptions.layout.chartHeight = ctx.canvas.height -
+                                                computedOptions.layout.padding.top -
+                                                computedOptions.layout.padding.bottom;
+                computedOptions.layout.bottomLable = {
+                    width : computedOptions.layout.chartWidth,
+                    height : computedOptions.layout.padding.top +
+                            computedOptions.layout.chartHeight
+                }
+            }
+            console.log(ctx.canvas.height);
+            console.log(computedOptions.layout.chartHeight);
+            console.log(computedOptions.layout.bottomLable.height);
         }
     };
     
     let Draw = {
-        drawGrid(ctx)
+        drawGrid()
         {
+            var ctx = this.getContext();
             ctx.save();
             ctx.strokeStyle = 'gray';
             ctx.lineWidth = 0.5;
+            
+            var step = 30;
 
             var width = ctx.canvas.width,
                 height = ctx.canvas.height;
-          
-            for(let i = 40.5; i < width - 40; i += 10)
+            
+                // to change defaultsOptions to computedOptions
+            var leftPadding = computedOptions.layout.padding.left;
+            var topPadding = computedOptions.layout.padding.top;
+            var bottomPadding = computedOptions.layout.padding.bottom;
+
+            // y
+            for(let i = leftPadding; i < width - topPadding; i += step)
             {
                 ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, height);
+                ctx.moveTo(i, topPadding);
+                ctx.lineTo(i, height - bottomPadding);
                 ctx.stroke();
             }
         
-            for(let i = 10.5; i < height; i += 10)
+            // x
+            for(let i = topPadding; i < height - bottomPadding; i += step)
             {
                 ctx.beginPath();
-                ctx.moveTo(40.5, i);
+                ctx.moveTo(leftPadding, i);
                 ctx.lineTo(width - 40, i);
                 ctx.stroke();
             }
 
             ctx.restore();
         },
-        axesLable(ctx)
+        axesLable(scales, axesType)
         {
-            var width = ctx.canvas.width;
-            var height = ctx.canvas.height / 2;
-            var fontStyle = globalDefaults.defaultFontSize + 'px ' + 'Arial';
+
+            var labelString,
+                fontStyle,
+                fontSize,
+                width,
+                height;
+            fontSize = globalDefaults.defaultFontSize;
+            fontStyle = fontSize + 'px ' + 'Arial';
+            
+            var ctx = this.getContext();
 
             ctx.save();
-            ctx.fillStyle = 'red';
-            ctx.ineWidth = 1;
+            ctx.fillStyle = globalDefaults.defaultFontColor;
+            ctx.lineWidth = 1;
             ctx.font = fontStyle;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.translate(20, height);
-            ctx.rotate(Math.PI * 1.5);
-            ctx.fillText('test', 30, 0 );
+
+            if(axesType==='xAxes')
+            {
+                labelString = scales[0].scaleLabel.labelString;
+                width = ctx.canvas.width / 2;
+                ctx.fillText(labelString, width, computedOptions.layout.bottomLable.height + fontSize + 1);
+            }else if(axesType==='yAxes'){
+                labelString = scales[0].scaleLabel.labelString;
+                width = ctx.canvas.width;
+                height = ctx.canvas.height / 2;
+                ctx.translate(25, height);
+                ctx.rotate(Math.PI * 1.5);
+                ctx.fillText(labelString, 0, 0 );
+            }
+
             ctx.restore();
+        },
+        baseCanvas(config)
+        {
+            var opts = config.options;
+
+            Draw.drawGrid();
+
+            for(var axes in opts.scales)
+            {   
+                if(opts.scales[axes][0].display)
+                {
+                    Draw.axesLable(opts.scales[axes], axes);
+                }
+            }
+
+        },
+        getContext(){
+            return this.ctx;
+        },
+        setContext(_ctx){
+            this.ctx = _ctx;
         }
-        
     }
 
-    /*
-    scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Month'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Value'
-                }
-            }]
-        } 
-    */
-
-    function initCanvas(ctx, config)
-    {
-        if(config.options.scales)
-        {
-            var scales = config.options.scales;
-        }
-        Draw.drawGrid(ctx);
-
-        for(var prop in scales)
-        {
-            console.log(prop);
-            Draw.axesLable(ctx, scales);
-        }
-
-        
-    };
-
    
-    let JChart = function(item, config)
+    let JChart = function(ctx, config)
     {
         this.resizeEvent = new Event('resizeEvt');
-        this.ctx = Helper.contextValidator(item, config);
-        this.canvas = item.canvas;
-        this.config = Helper.initConfig(config);
+        this.ctx = Helper.contextValidator(ctx, config);
+        this.canvas = ctx.canvas;
+        this.config = Helper.initConfig(ctx, config);
         this.initialize();
         return {
             update : function()
@@ -227,7 +287,10 @@ let config =
     JChart.prototype.initialize = function()
     {
         var me = this;
-        initCanvas(me.ctx, me.config);
+        Draw.setContext(me.ctx);
+        
+        Helper.computeSize(me.ctx);
+        Draw.baseCanvas(me.config);
 
         Helper.saveDrawingSurface(me.ctx);
         me.bindEvent();
@@ -247,9 +310,11 @@ let config =
     JChart.prototype.resizeCanvas = function(size)
     {
         //console.log(`width : ${size.detail.inWidth}, height : ${size.detail.inHeight}`);
-        this.canvas.width = size.detail.inWidth;
-        this.canvas.height = (this.canvas.width / 21) * 9;
-        initCanvas(this.ctx, this.config);
+        var me = this;
+        me.canvas.width = size.detail.inWidth;
+        me.canvas.height = (me.canvas.width / 21) * 9;  // aspect ratio 21:9
+        Helper.computeSize(me.ctx);
+        Draw.baseCanvas(this.config);
     }
 
     JChart.prototype.bindResizeEvent = function()
@@ -272,8 +337,9 @@ document.addEventListener('DOMContentLoaded', function()
 
     let canvas = document.getElementById('myChart');
     let ctx = canvas.getContext('2d');
-
+    
     let myChart = new JChart(ctx, config);
     //let chart = new Chart(ctx, config);
+
 
 },false);

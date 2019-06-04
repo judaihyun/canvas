@@ -40,5 +40,21 @@ procedure :
 
 1. contextValidator(ctx, config) : 
 2. initConfig() : 
+-> 2-1. merge config
 3. initalize()
--> 3-1. initCanvas();
+-> 3-1. computeSize(ctx)
+-> 3-2. baseCanvas(config);
+-> 3-3. saveDrawingSurface();
+-> 3-4. bindEvent();
+
+4. baseCanvas() : 
+-> 4-1. drawGrid();
+-> 4-2. axesLable();
+
+
+5. bindEvent()
+-> 5-1. Helper.resizeForResponsive(ctx);
+
+6. resizeForResponsive()
+-> 6-1. computeSize(ctx);
+-> 6-2. baseCanvas(config);
