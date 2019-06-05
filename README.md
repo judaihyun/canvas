@@ -1,5 +1,7 @@
 Terminology
 
-![chart_terms_main.png](./image/chart_terms_main.png)
+<div>
+  <img src="![chart_terms_main](./image/chart_terms_main.png)">
+</div>
 
 
