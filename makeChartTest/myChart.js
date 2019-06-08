@@ -12,13 +12,13 @@ let config =
         }]
     },
     options:{
-        responsive:true,
+        responsive: true,
         layout: {
             padding: {
                 top: 40.5,
 				right: 0,
 				bottom: 40.5,
-				left: 50.5 
+				left: 65.5
             }
         },
         scales: {
@@ -155,20 +155,33 @@ let config =
             if(computedOptions.layout.padding)
             {
                 computedOptions.layout.chartWidth = ctx.canvas.width -
-                                                computedOptions.layout.padding.left- 
-                                                computedOptions.layout.padding.right;
+                                                (computedOptions.layout.padding.left +  
+                                                computedOptions.layout.padding.right);
                 computedOptions.layout.chartHeight = ctx.canvas.height -
-                                                computedOptions.layout.padding.top -
-                                                computedOptions.layout.padding.bottom;
+                                                (computedOptions.layout.padding.top +
+                                                computedOptions.layout.padding.bottom);
                 computedOptions.layout.bottomLable = {
                     width : computedOptions.layout.chartWidth,
                     height : computedOptions.layout.padding.top +
                             computedOptions.layout.chartHeight
                 }
+            
             }
-            console.log(ctx.canvas.height);
-            console.log(computedOptions.layout.chartHeight);
-            console.log(computedOptions.layout.bottomLable.height);
+            //console.log(ctx.canvas.height);
+            //console.log(computedOptions.layout.chartHeight);
+            //console.log(computedOptions.layout.bottomLable.height);
+        },
+        drawingRect(ctx) // for debug only
+        {
+            ctx.save();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(computedOptions.layout.padding.left,
+                            computedOptions.layout.padding.top,
+                            computedOptions.layout.chartWidth,
+                            computedOptions.layout.chartHeight);
+                            console.log('drawingRect height : ' + computedOptions.layout.chartHeight);
+            ctx.restore();
         }
     };
     
@@ -176,49 +189,79 @@ let config =
         drawGrid()
         {
             var ctx = this.getContext();
-            ctx.save();
             ctx.strokeStyle = 'gray';
             ctx.lineWidth = 0.5;
+
+            var fontSize = globalDefaults.defaultFontSize,
+            fontStyle = fontSize + 'px ' + 'Arial';
+            ctx.font = fontStyle,
+            ctx.textAlign = 'center',
+            ctx.textBaseline = 'middle';
             
-            var step = 30;
 
             var width = ctx.canvas.width,
                 height = ctx.canvas.height;
             
-                // to change defaultsOptions to computedOptions
-            var leftPadding = computedOptions.layout.padding.left;
-            var topPadding = computedOptions.layout.padding.top;
-            var bottomPadding = computedOptions.layout.padding.bottom;
+            
+            var leftPadding = computedOptions.layout.padding.left,
+                topPadding = computedOptions.layout.padding.top,
+                bottomPadding = computedOptions.layout.padding.bottom,
+                chartWidth = computedOptions.layout.chartWidth,
+                chartHeight = computedOptions.layout.chartHeight,
+                stepx = Math.ceil((chartHeight) / 11);  // 올림
+            var dummy = 0;
+            var stepy = chartWidth / 2;
 
+            console.log('stepx : ' + stepx);
+            console.log('stepy : ' + stepy);
+            console.log(chartHeight);
+
+            ctx.save();
             // y
-            for(let i = leftPadding; i < width - topPadding; i += step)
+            for(let i = leftPadding; i < chartWidth; i += stepy)
             {
                 ctx.beginPath();
                 ctx.moveTo(i, topPadding);
-                ctx.lineTo(i, height - bottomPadding);
-                ctx.stroke();
-            }
-        
-            // x
-            for(let i = topPadding; i < height - bottomPadding; i += step)
-            {
-                ctx.beginPath();
-                ctx.moveTo(leftPadding, i);
-                ctx.lineTo(width - 40, i);
+                ctx.lineTo(i, chartHeight);
                 ctx.stroke();
             }
 
+            var text = 1.0;
+        
+            // x
+            var count = 0;
+            for(let i = topPadding; i < chartHeight + topPadding; i += stepx)
+            {
+                ctx.beginPath();
+                ctx.lineWidth = 0.5;
+                console.log('i : ' + i);
+                if(count === 5)
+                {
+                    ctx.lineWidth = 1;
+                }
+                text = text.toFixed(1);
+                ctx.fillText(text, leftPadding - 20, i);
+                ctx.moveTo(leftPadding - 10, i);
+                ctx.lineTo(width - 40, i);
+                text -= 0.2;
+                count++;
+                ctx.stroke();
+            }
+            console.log('row count : '+count);
+
             ctx.restore();
+
+            Helper.drawingRect(ctx);
+
         },
         axesLable(scales, axesType)
         {
 
             var labelString,
                 fontStyle,
-                fontSize,
                 width,
-                height;
-            fontSize = globalDefaults.defaultFontSize;
+                height,
+            fontSize = globalDefaults.defaultFontSize,
             fontStyle = fontSize + 'px ' + 'Arial';
             
             var ctx = this.getContext();
@@ -259,7 +302,6 @@ let config =
                     Draw.axesLable(opts.scales[axes], axes);
                 }
             }
-
         },
         getContext(){
             return this.ctx;
@@ -280,6 +322,9 @@ let config =
         return {
             update : function()
             {   
+            },
+            values : function(){
+                return computedOptions;
             }
         }
     };
@@ -292,7 +337,6 @@ let config =
         Helper.computeSize(me.ctx);
         Draw.baseCanvas(me.config);
 
-        Helper.saveDrawingSurface(me.ctx);
         me.bindEvent();
         return me;
     }; 
@@ -340,6 +384,14 @@ document.addEventListener('DOMContentLoaded', function()
     
     let myChart = new JChart(ctx, config);
     //let chart = new Chart(ctx, config);
+    var value = myChart.values();
+  
+    document.getElementById('chartWidth').innerHTML = 'chartWidth : ' + value.layout.chartWidth;
+    document.getElementById('chartHeight').innerHTML = 'chartHeight : ' + value.layout.chartHeight;
+    document.getElementById('topPadding').innerHTML = 'topPadding : ' + value.layout.padding.top;
+    document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
+    document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
+    document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
 
 
 },false);
