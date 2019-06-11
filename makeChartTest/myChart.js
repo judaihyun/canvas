@@ -4,7 +4,9 @@ let config =
     type:'line',
     data:{
         labels: [
-            'jan','feb'
+            'January'
+            ,'February'
+            ,'March'
         ],
         datasets: [{
             label: 'firstLable',
@@ -23,7 +25,7 @@ let config =
         layout: {
             padding: {
                 top: 40.5,
-				right: 20,
+				right: 40,
 				bottom: 30.5,
 				left: 65.5
             }
@@ -211,6 +213,7 @@ let config =
                 ctx.restore();
             })();
 
+            /*
             (function xRangeAxis(){
                 ctx.save();
                 ctx.strokeStyle = 'green';
@@ -221,6 +224,7 @@ let config =
                             computedOptions.layout.chartHeight);
                 ctx.restore();
             })();
+            */
 
           
             (function bottomLable(){
@@ -266,31 +270,38 @@ let config =
 
         
             let label = data.labels;
-            let dataSize = data.datasets[0].data.length - 1;
-            let stepy = chartWidth / dataSize;
+            
+            let labelLength = label.length || 1;
+            let stepy = chartWidth / (labelLength - 1); 
+            
+            /*
+                x -> x
+                0 -> 1
+                1 -> 2
+                2 -> 3
+            */
 
             console.log('stepx : ' + stepx);
             console.log('stepy : ' + stepy);
-            console.log(chartHeight + topPadding);
+            console.log('chartWidth : ' + chartWidth);
 
-            ctx.save();
             // y
-           
-            for(let i = leftPadding; i < chartWidth; i += stepy)
+            ctx.save();
+            for(let i = leftPadding, xAxes = 0; i <= chartWidth + leftPadding; i += stepy, xAxes++)
             {
                 ctx.beginPath();
                 ctx.moveTo(i, topPadding);
                 ctx.lineTo(i, chartHeight + 20.5);
-                console.log(label[i]);
-                ctx.fillText(label[i], i, chartHeight + bottomPadding);
+                Draw.xRangeAxis(label[xAxes], i, chartHeight + bottomPadding);
                 ctx.stroke();
             }
-            
+            ctx.restore();
 
-            let text = 1.0;
-        
-            // x
+            let yTick = 1.0;
             var count = 0;
+
+            // x
+            ctx.save();
             for(let x = topPadding; x < chartHeight + topPadding; x += stepx)
             {
                 ctx.beginPath();
@@ -299,23 +310,29 @@ let config =
                 {
                     ctx.lineWidth = 1;
                 }
-                text = text.toFixed(1);
-                ctx.fillText(text, leftPadding - 20, x);
+                yTick = yTick.toFixed(1);
+                ctx.fillText(yTick, leftPadding - 20, x);
 
                 ctx.moveTo(leftPadding - 10, x);
                 ctx.lineTo(leftPadding + chartWidth, x);
-                text -= 0.2;
+                yTick -= 0.2;
                 count++;
                 ctx.stroke();
             }
+            ctx.restore();
             console.log('row count : '+count);
 
-            ctx.restore();
 
             Helper.drawingRect(ctx);
 
         },
-        legendLable(scales, axesType)
+        xRangeAxis(string, x, y)
+        {
+            if(typeof string === 'undefined' && !string) return;
+            var ctx = this.getContext();
+            ctx.fillText(string, x, y);
+        },
+        axisTitle(scales, axesType)
         {
 
             var labelString,
@@ -371,7 +388,7 @@ let config =
             {   
                 if(opts.scales[axes][0].display)
                 {
-                    Draw.legendLable(opts.scales[axes], axes);
+                    Draw.axisTitle(opts.scales[axes], axes);
                 }
             }
         },
@@ -395,7 +412,7 @@ let config =
         return {
             update : function()
             {   
-               // Draw.baseCanvas(me.config);
+                Draw.baseCanvas(me.config);
             },
             values : function(){
                 return computedOptions;
