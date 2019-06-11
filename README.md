@@ -2,6 +2,8 @@ Terminology
 
 
   ![chart_terms_main](https://user-images.githubusercontent.com/10599877/58941031-ea39d600-87b5-11e9-8fec-ab1705c33a1c.png)
+  
+https://wiki.pentaho.com/display/Reporting/Charting+Terminology
 
 <p>
 CHART : API의하여 생성된 전체 차트 영역</br>
