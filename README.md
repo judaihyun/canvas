@@ -2,6 +2,8 @@ Terminology
 
 
   ![chart_terms_main](https://user-images.githubusercontent.com/10599877/58941031-ea39d600-87b5-11e9-8fec-ab1705c33a1c.png)
+  
+https://wiki.pentaho.com/display/Reporting/Charting+Terminology
 
 <p>
 CHART : API의하여 생성된 전체 차트 영역</br>
@@ -17,6 +19,7 @@ AXIS TITLE : 축에 대한 설명</br>
 MAJOR TICK : 축의 표시에서 표시되는 값</br>
 MINOR TICK : 존재는 하나, 축으로써 표시되지 않는 값(표시될수있음, major tick의 하위 단위)</br>
 TICK LABEL : tick에 대한 설명</br>
+DATA POINT : 차트에 표시되는 하나의 값</br>
 </p>
 
 
