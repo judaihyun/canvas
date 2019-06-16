@@ -11,7 +11,9 @@ let config =
         datasets: [{
             label: 'firstLable',
             data: [
-                5,1,4
+//                4, -7, 4, 4, 6, 1
+//                13,-53,39,98,-72,36
+1
             ]
         },{
             label: 'secondLable',
@@ -186,6 +188,57 @@ let config =
             //console.log(computedOptions.layout.chartHeight);
             //console.log(computedOptions.layout.bottomLable.height);
         },
+        integerRound(_value)
+        {
+            this.isExist(_value);
+            if(_value === 0) return 0;
+            if(_value < 0)
+            {
+                _value *= -1;
+            }
+            if(_value < 10) return _value;
+
+
+            if(_value % 10 !== 0)
+            {
+                _value = (Math.floor(_value / 10) + 1) * 10;
+            }
+            return _value;
+        },
+        yTickStepFunc(max, min)
+        {
+            var yTickStep = 0.2;
+            var sum;
+            if(!min) return yTickStep;
+            else if(min === max) return yTickStep;
+            else
+                sum = max + min;
+
+            if(sum == 0){
+                yTickStep = 0.2;
+            }else if(sum <= 1)
+            {
+                yTickStep = 0.1;
+            }else if(sum <= 2)
+            {
+                yTickStep = 0.2;
+            }else if(sum <= 5)
+            {
+                yTickStep = 0.5;
+            }else if(sum <= 10)
+            {
+                yTickStep = 1;
+            }else if(sum <= 20)
+            {
+                yTickStep = 2;
+            }else if(sum <= 100)
+            {
+                yTickStep = 10;
+            }else{
+                yTickStep = 20;
+            }
+            return yTickStep;
+        },
         drawingRect(ctx) // for debug only
         {
           
@@ -213,18 +266,20 @@ let config =
                 ctx.restore();
             })();
 
+            
             /*
-            (function xRangeAxis(){
+            (function yTickLabel(){
                 ctx.save();
                 ctx.strokeStyle = 'green';
                 ctx.lineWidth = 0.5;
-                ctx.strokeRect(computedOptions.layout.padding.left,
-                            computedOptions.layout.padding.top,
-                            computedOptions.layout.chartWidth,
+                ctx.strokeRect(30,
+                            30,
+                            30,
                             computedOptions.layout.chartHeight);
                 ctx.restore();
             })();
             */
+            
 
           
             (function bottomLable(){
@@ -253,53 +308,67 @@ let config =
             ctx.font = fontStyle,
             ctx.textAlign = 'center',
             ctx.textBaseline = 'middle';
-            
 
             let width = ctx.canvas.width,
                 height = ctx.canvas.height;
-            
             
             let leftPadding = computedOptions.layout.padding.left,
                 rightPadding = computedOptions.layout.padding.right,
                 topPadding = computedOptions.layout.padding.top,
                 bottomPadding = computedOptions.layout.padding.bottom,
                 chartWidth = computedOptions.layout.chartWidth,
-                chartHeight = computedOptions.layout.chartHeight,
-                stepx = Math.ceil((chartHeight) / 11);  // 올림
-            let dummy = 0;
-
+                chartHeight = computedOptions.layout.chartHeight;
         
             let label = data.labels;
             
             let labelLength = label.length || 1;
             let stepy = chartWidth / (labelLength - 1); 
             
-            /*
-                x -> x
-                0 -> 1
-                1 -> 2
-                2 -> 3
-            */
-
-            console.log('stepx : ' + stepx);
-            console.log('stepy : ' + stepy);
-            console.log('chartWidth : ' + chartWidth);
-
             // y
             ctx.save();
-            for(let i = leftPadding, xAxes = 0; i <= chartWidth + leftPadding; i += stepy, xAxes++)
+            for(let x = leftPadding, xAxes = 0; x <= chartWidth + leftPadding; x += stepy, xAxes++)
             {
                 ctx.beginPath();
-                ctx.moveTo(i, topPadding);
-                ctx.lineTo(i, chartHeight + 20.5);
-                Draw.xRangeAxis(label[xAxes], i, chartHeight + bottomPadding);
+                ctx.moveTo(x, topPadding);
+                ctx.lineTo(x, chartHeight + 20.5);
+                Draw.xAxisLabel(label[xAxes], x, chartHeight + bottomPadding);
                 ctx.stroke();
             }
             ctx.restore();
 
-            let yTick = 1.0;
-            var count = 0;
 
+            let dataPoint = data.datasets[0].data;
+            let maxData = Math.max.apply(null, dataPoint);
+            let minData = Math.min.apply(null, dataPoint);
+
+            maxData = Helper.integerRound(maxData);
+            minData = Helper.integerRound(minData);
+
+            let yTickStep = Helper.yTickStepFunc(maxData, minData);
+
+            
+            if(maxData < -1) maxData *= -1;
+            if(minData < -1) minData *= -1;
+            console.log('yTickStep : ' + yTickStep);
+            console.log(maxData);
+            console.log(minData);
+
+            
+            if(maxData % yTickStep !== 0)
+            {
+                maxData += maxData % yTickStep;
+            }
+            
+            
+            //let stepx = Math.ceil((chartHeight) / 11);  
+            let yTickNumbers = Math.ceil(maxData / yTickStep) + Math.ceil(minData / yTickStep) + 1;
+            console.log('yTickNumbers : '+yTickNumbers);
+            let stepx = Math.ceil((chartHeight) / yTickNumbers);  
+          
+
+            let yTick = maxData;
+
+            var count = 0;
             // x
             ctx.save();
             for(let x = topPadding; x < chartHeight + topPadding; x += stepx)
@@ -310,12 +379,12 @@ let config =
                 {
                     ctx.lineWidth = 1;
                 }
-                yTick = yTick.toFixed(1);
-                ctx.fillText(yTick, leftPadding - 20, x);
+
+                Draw.yTickLabel(yTick, leftPadding - 20, x);
 
                 ctx.moveTo(leftPadding - 10, x);
                 ctx.lineTo(leftPadding + chartWidth, x);
-                yTick -= 0.2;
+                yTick -= yTickStep;
                 count++;
                 ctx.stroke();
             }
@@ -323,16 +392,22 @@ let config =
             console.log('row count : '+count);
 
 
-            Helper.drawingRect(ctx);
+            Helper.drawingRect(ctx); // for debug only
 
         },
-        xRangeAxis(string, x, y)
+        yTickLabel(tick, x, y)
+        {
+            let ctx = this.getContext();
+            let yTick = tick.toFixed(1);
+            ctx.fillText(yTick, x, y);
+        },
+        xAxisLabel(string, x, y)
         {
             if(typeof string === 'undefined' && !string) return;
             var ctx = this.getContext();
             ctx.fillText(string, x, y);
         },
-        axisTitle(scales, axesType)
+        axisTitles(scales, axesType)
         {
 
             var labelString,
@@ -367,17 +442,33 @@ let config =
 
             ctx.restore();
         },
-        rangeAxis()
+        dataPoint(data)
         {
             let ctx = this.getContext();
+            let datas = data.datasets[0];
+            console.log(datas.data); 
 
+            ctx.save();
+            ctx.beginPath();
+            //ctx.moveTo();
+            //ctx.arc();
 
+        },
+        clearRect()
+        {
+            let ctx = this.getContext();
+            ctx.save();
+            ctx.clearRect(30,30,30,computedOptions.layout.chartHeight);
         },
         baseCanvas(config)
         {
             let opts = config.options;
             let data = config.data; 
+
             Draw.drawGrid(data);
+
+            Draw.dataPoint(data);
+
             /*
             datasets.forEach((datas) => {
                 Draw.drawGrid(datas);
@@ -388,7 +479,7 @@ let config =
             {   
                 if(opts.scales[axes][0].display)
                 {
-                    Draw.axisTitle(opts.scales[axes], axes);
+                    Draw.axisTitles(opts.scales[axes], axes);
                 }
             }
         },
@@ -403,6 +494,11 @@ let config =
    
     let JChart = function(ctx, config)
     {
+        if(!(this instanceof JChart))
+        {
+            return new JChart();
+        };
+
         let me = this;
         me.resizeEvent = new Event('resizeEvt');
         me.ctx = Helper.contextValidator(ctx, config);
@@ -412,6 +508,12 @@ let config =
         return {
             update : function()
             {   
+                me.config.data.datasets.forEach(function(dataset) {
+                    dataset.data = dataset.data.map(function() {
+                        return randomScalingFactor();
+                    });
+                });
+                Draw.clearRect();
                 Draw.baseCanvas(me.config);
             },
             values : function(){
@@ -464,8 +566,28 @@ let config =
   
 
     window.JChart = JChart;
-
+    var Samples = {};
+    Samples.utils = {
+        srand: function(seed) {
+            this._seed = seed;
+        },
+    
+        rand: function(min, max) {
+            var seed = this._seed;
+            min = min === undefined ? 0 : min;
+            max = max === undefined ? 1 : max;
+            this._seed = (seed * 9301 + 49297) % 233280;
+            var result = min + (this._seed / 233280) * (max - min);
+            return result;
+        }
+    }
+    
+    Samples.utils.srand(Date.now());
+    var randomScalingFactor = function() {
+        return Math.round(Samples.utils.rand(-100, 100));
+    };
 });
+
 
 document.addEventListener('DOMContentLoaded', function()
 {
@@ -485,7 +607,8 @@ document.addEventListener('DOMContentLoaded', function()
     document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
-        myChart.update();
+        var dummy = [38,20,74,-70,-68,16];
+        myChart.update(dummy);
     },false);
 
 

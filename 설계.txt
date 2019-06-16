@@ -22,7 +22,7 @@
 	B1 : x rangeAxis area
 	B2 : legendLable(bottomLable)
 	L1 : legendLable(leftLable);
-	L2 : y rangeAxis area
+	L2 : y rangeAxis area(yTickLable)
 	T1 : title
 	T2 : subtitle
 
