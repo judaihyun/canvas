@@ -7,7 +7,7 @@ describe('yTickLable TEST', function(){
                 label: 'firstLable',
                 data: [
                         //4, -7, 4, 4, 6, 1
-                        -80,-42,17
+                        -80
                 ]
             }]
         }
@@ -37,7 +37,7 @@ describe('yTickLable TEST', function(){
 
         beforeEach(function(){
             var num = generatorNumber();
-            for(var i = 0; i < 100; i++){
+            for(var i = 0; i <= 110; i++){
                 var value = num();
                 //console.log('before('+value+') ' + Helper.integerRound(value));
                 array.push(Helper.integerRound(value));
@@ -86,46 +86,13 @@ describe('yTickLable TEST', function(){
             }
         });
         
-        it('yTickStepFunc(max) => 0.2', function(){
+        it('it has only one data, yTickStepFunc(max) => 0.2', function(){
             maxArr.forEach(function(i){
                 var max = Helper.integerRound(i);
                 expect(yTickStepFunc(max)).toEqual(0.2);
             })
         });
 
-        it('yTickStepFun()',function(){
-            for(var max = 0; max < maxArr.length; ++max)
-            {
-                for(var min = 0; min < minArr.length; ++min)
-                {
-                    var dumMax = Helper.integerRound(maxArr[max]);
-                    var dumMin = Helper.integerRound(minArr[min]);
-                    console.log(`oriMax(${maxArr[max]}) : oriMin(${minArr[min]})`);
-                    console.log('max('+dumMax+') + min('+dumMin+') : step(' + yTickStepFunc(dumMax, dumMin) + ')');
-                    //console.log('oriMax:' + maxArr[max] + ',  ' + yTickStepFunc(dumMax));
-                //(x = max+min), x > 100 == 20, x <= 100 == 10, x <= 20 == 2, x <= 10 == not defined
-                }
-            }
-        });
-
-        it('yTickNumbers -> ', function(){
-            /*
-            for(var max = 0; max < maxArr.length; ++max)
-            {
-                for(var min = 0; min < minArr.length; ++min)
-                {
-                    var step = yTickStepFunc(maxArr[max], minArr[min]);
-                    var yTickNumbers = yTickNumberFunc(maxArr[max], minArr[min], step);
-                    var toBe;
-                    console.log(`step(${step})max(${maxArr[max]}) + min(${minArr[min]}) -> yTickNumber : ${yTickNumbers}`);
-                }
-            }
-            */
-         /*   var yTickStep = i; 
-            console.log('yTickStep : ' + i);
-            var toBe;
-            */
-        });
 
         function yTickNumberFunc(max, min, step)
         {

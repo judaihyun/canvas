@@ -25,43 +25,6 @@ let Helper = {
     }
 }
 
-function yTickStepFunc(max, min)
-{
-    var yTickStep = 0.2;
-    var sum;
-    if(!min) return yTickStep;
-    else if(min === max) return yTickStep;
-    else
-        sum = max + min; 
-
-    if(sum == 0){
-        yTickStep = 0.2;
-    }else if(sum <= 1)
-    {
-        yTickStep = 0.1;
-    }else if(sum <= 2)
-    {
-        yTickStep = 0.2;
-    }else if(sum <= 5)
-    {
-        yTickStep = 0.5;
-    }else if(sum <= 10)
-    {
-        yTickStep = 1;
-    }else if(sum <= 20)
-    {
-        yTickStep = 2;
-    }else if(sum <= 50)
-    {
-        yTickStep = 5;
-    }else if(sum <= 100)
-    {
-        yTickStep = 10;
-    }else{
-        yTickStep = 20;
-    }
-    return yTickStep;
-}
 
 /*
 let dataPoint = data.datasets[0].data;

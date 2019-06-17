@@ -13,7 +13,7 @@ let config =
             data: [
 //                4, -7, 4, 4, 6, 1
 //                13,-53,39,98,-72,36
-1
+                -100, 140 
             ]
         },{
             label: 'secondLable',
@@ -205,39 +205,75 @@ let config =
             }
             return _value;
         },
-        yTickStepFunc(max, min)
+        niceScale(min, max)
         {
-            var yTickStep = 0.2;
-            var sum;
-            if(!min) return yTickStep;
-            else if(min === max) return yTickStep;
-            else
-                sum = max + min;
+            /*
+                to get a 'nice number' algorithm. detail below 
+            https://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+            */
 
-            if(sum == 0){
-                yTickStep = 0.2;
-            }else if(sum <= 1)
-            {
-                yTickStep = 0.1;
-            }else if(sum <= 2)
-            {
-                yTickStep = 0.2;
-            }else if(sum <= 5)
-            {
-                yTickStep = 0.5;
-            }else if(sum <= 10)
-            {
-                yTickStep = 1;
-            }else if(sum <= 20)
-            {
-                yTickStep = 2;
-            }else if(sum <= 100)
-            {
-                yTickStep = 10;
-            }else{
-                yTickStep = 20;
+            var minPoint = min;
+            var maxPoint = max;
+            var maxTicks = 11;
+            var tickSpacing;
+            var range;
+            var niceMin;
+            var niceMax;
+
+            calculate();
+            return {
+                tickSpacing: tickSpacing,
+                niceMinimum: niceMin,
+                niceMaximum: niceMax
+            };
+
+            function calculate() {
+                range = niceNum(maxPoint - minPoint, false);
+                tickSpacing = niceNum(range / (maxTicks - 1), true);
+                niceMin =
+                    Math.floor(minPoint / tickSpacing) * tickSpacing;
+                niceMax =
+                    Math.ceil(maxPoint / tickSpacing) * tickSpacing;
             }
-            return yTickStep;
+
+            function niceNum(localRange, round) {
+                var exponent; /** exponent of localRange */
+                var fraction; /** fractional part of localRange */
+                var niceFraction; /** nice, rounded fraction */
+
+                exponent = Math.floor(Math.log10(localRange));
+                fraction = localRange / Math.pow(10, exponent);
+
+                if (round) {
+                    if (fraction < 1.5)
+                        niceFraction = 1;
+                    else if (fraction < 3)
+                        niceFraction = 2;
+                    else if (fraction < 7)
+                        niceFraction = 5;
+                    else
+                        niceFraction = 10;
+                } else {
+                    if (fraction <= 1)
+                        niceFraction = 1;
+                    else if (fraction <= 2)
+                        niceFraction = 2;
+                    else if (fraction <= 5)
+                        niceFraction = 5;
+                    else
+                        niceFraction = 10;
+                }
+                return niceFraction * Math.pow(10, exponent);
+            }
+
+        },
+        yTickNumFunc(_max, _min, step){
+            var max = _max;
+            var min = _min;
+            if(max < -1) max *= -1;
+            if(min < -1) min *= -1;
+            
+            return (max + min) / step + 1;
         },
         drawingRect(ctx) // for debug only
         {
@@ -278,10 +314,7 @@ let config =
                             computedOptions.layout.chartHeight);
                 ctx.restore();
             })();
-            */
             
-
-          
             (function bottomLable(){
                 ctx.save();
                 ctx.strokeStyle = 'blue';
@@ -292,10 +325,15 @@ let config =
                             computedOptions.layout.bottomLable.height);
                 ctx.restore();
             })();
+            */
         }
     };
     
     let Draw = {
+        yGridWithLabel()
+        {
+            
+        },
         drawGrid(data)
         {
             console.log(data);
@@ -323,59 +361,54 @@ let config =
             
             let labelLength = label.length || 1;
             let stepy = chartWidth / (labelLength - 1); 
-            
-            // y
+           
             ctx.save();
             for(let x = leftPadding, xAxes = 0; x <= chartWidth + leftPadding; x += stepy, xAxes++)
             {
                 ctx.beginPath();
                 ctx.moveTo(x, topPadding);
-                ctx.lineTo(x, chartHeight + 20.5);
-                Draw.xAxisLabel(label[xAxes], x, chartHeight + bottomPadding);
+                ctx.lineTo(x, chartHeight + 0.5);
+                Draw.xAxisLabel(label[xAxes], x, chartHeight + bottomPadding - 20);
                 ctx.stroke();
             }
             ctx.restore();
 
-
             let dataPoint = data.datasets[0].data;
-            let maxData = Math.max.apply(null, dataPoint);
-            let minData = Math.min.apply(null, dataPoint);
+            let maxValue = Math.max.apply(null, dataPoint);
+            let minValue = Math.min.apply(null, dataPoint);
 
-            maxData = Helper.integerRound(maxData);
-            minData = Helper.integerRound(minData);
-
-            let yTickStep = Helper.yTickStepFunc(maxData, minData);
-
-            
-            if(maxData < -1) maxData *= -1;
-            if(minData < -1) minData *= -1;
-            console.log('yTickStep : ' + yTickStep);
-            console.log(maxData);
-            console.log(minData);
-
-            
-            if(maxData % yTickStep !== 0)
+            console.log(maxValue);
+            console.log(minValue);
+            let nice, niceMax, niceMin, yTickStep, yTickNumber;
+            if(maxValue !== minValue)
             {
-                maxData += maxData % yTickStep;
+                nice = Helper.niceScale(minValue, maxValue);
+                niceMax = nice.niceMaximum;
+                niceMin = nice.niceMinimum;
+                yTickStep = nice.tickSpacing;
+                yTickNumber = Helper.yTickNumFunc(niceMax, niceMin, yTickStep);
+            }else{
+                yTickStep = 0.2;
+                niceMax = maxValue + (yTickStep * 5);
+                niceMin = maxValue - (yTickStep * 5);
+                yTickNumber = 11;
             }
-            
-            
-            //let stepx = Math.ceil((chartHeight) / 11);  
-            let yTickNumbers = Math.ceil(maxData / yTickStep) + Math.ceil(minData / yTickStep) + 1;
-            console.log('yTickNumbers : '+yTickNumbers);
-            let stepx = Math.ceil((chartHeight) / yTickNumbers);  
-          
 
-            let yTick = maxData;
+            console.log('tickStep: ' + yTickStep);
+            console.log('niceMax : ' + niceMax);
+            console.log('niceMin : ' + niceMin);
+            console.log('yTickNumber : ' + yTickNumber);
 
-            var count = 0;
-            // x
+            let stepx = Math.ceil((chartHeight) / yTickNumber);  
+            console.log('stepx : ' + stepx);
+            let yTick = niceMax;
+
             ctx.save();
             for(let x = topPadding; x < chartHeight + topPadding; x += stepx)
             {
                 ctx.beginPath();
                 ctx.lineWidth = 0.5;
-                if(count === 5)
+                if(yTick === 0)
                 {
                     ctx.lineWidth = 1;
                 }
@@ -385,11 +418,9 @@ let config =
                 ctx.moveTo(leftPadding - 10, x);
                 ctx.lineTo(leftPadding + chartWidth, x);
                 yTick -= yTickStep;
-                count++;
                 ctx.stroke();
             }
             ctx.restore();
-            console.log('row count : '+count);
 
 
             Helper.drawingRect(ctx); // for debug only
@@ -506,13 +537,16 @@ let config =
         me.config = Helper.initConfig(ctx, config);
         me.initialize();
         return {
-            update : function()
+            update : function(array)
             {   
+                me.config.datasets[0].data = array;
+                /*
                 me.config.data.datasets.forEach(function(dataset) {
                     dataset.data = dataset.data.map(function() {
                         return randomScalingFactor();
                     });
                 });
+                */
                 Draw.clearRect();
                 Draw.baseCanvas(me.config);
             },
