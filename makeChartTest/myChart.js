@@ -158,8 +158,9 @@ let config =
             ctx.canvas.height = (ctx.canvas.width / 21)*9;  // aspect ratio 21:9
             //console.log('window.innerHeight : ' + window.innerHeight + ', window.innerWidth : ' + window.innerWidth);
             //console.log('canvas.width : ' + ctx.canvas.width + ', canvas.height : ' + ctx.canvas.height);
-            Helper.computeSize(ctx);
-            Draw.baseCanvas(config);
+
+            //Helper.computeSize(ctx);
+            //Draw.baseCanvas(config);
         },
         computeSize(ctx)
         {
@@ -187,23 +188,6 @@ let config =
             //console.log(ctx.canvas.height);
             //console.log(computedOptions.layout.chartHeight);
             //console.log(computedOptions.layout.bottomLable.height);
-        },
-        integerRound(_value)
-        {
-            this.isExist(_value);
-            if(_value === 0) return 0;
-            if(_value < 0)
-            {
-                _value *= -1;
-            }
-            if(_value < 10) return _value;
-
-
-            if(_value % 10 !== 0)
-            {
-                _value = (Math.floor(_value / 10) + 1) * 10;
-            }
-            return _value;
         },
         niceScale(min, max)
         {
@@ -330,23 +314,9 @@ let config =
     };
     
     let Draw = {
-        yGridWithLabel()
+        drawOptions()
         {
-            
-        },
-        drawGrid(data)
-        {
-            console.log(data);
             let ctx = this.getContext();
-            ctx.strokeStyle = 'gray';
-            ctx.lineWidth = 0.5;
-
-            let fontSize = globalDefaults.defaultFontSize,
-            fontStyle = fontSize + 'px ' + 'Arial';
-            ctx.font = fontStyle,
-            ctx.textAlign = 'center',
-            ctx.textBaseline = 'middle';
-
             let width = ctx.canvas.width,
                 height = ctx.canvas.height;
             
@@ -356,91 +326,126 @@ let config =
                 bottomPadding = computedOptions.layout.padding.bottom,
                 chartWidth = computedOptions.layout.chartWidth,
                 chartHeight = computedOptions.layout.chartHeight;
-        
-            let label = data.labels;
-            
-            let labelLength = label.length || 1;
-            let stepy = chartWidth / (labelLength - 1); 
-           
-            ctx.save();
-            for(let x = leftPadding, xAxes = 0; x <= chartWidth + leftPadding; x += stepy, xAxes++)
-            {
-                ctx.beginPath();
-                ctx.moveTo(x, topPadding);
-                ctx.lineTo(x, chartHeight + 0.5);
-                Draw.xAxisLabel(label[xAxes], x, chartHeight + bottomPadding - 20);
-                ctx.stroke();
-            }
-            ctx.restore();
-
-            let dataPoint = data.datasets[0].data;
-            let maxValue = Math.max.apply(null, dataPoint);
-            let minValue = Math.min.apply(null, dataPoint);
-
-            console.log(maxValue);
-            console.log(minValue);
-            let nice, niceMax, niceMin, yTickStep, yTickNumber;
-            if(maxValue !== minValue)
-            {
-                nice = Helper.niceScale(minValue, maxValue);
-                niceMax = nice.niceMaximum;
-                niceMin = nice.niceMinimum;
-                yTickStep = nice.tickSpacing;
-                yTickNumber = Helper.yTickNumFunc(niceMax, niceMin, yTickStep);
-            }else{
-                yTickStep = 0.2;
-                niceMax = maxValue + (yTickStep * 5);
-                niceMin = maxValue - (yTickStep * 5);
-                yTickNumber = 11;
-            }
-
-            console.log('tickStep: ' + yTickStep);
-            console.log('niceMax : ' + niceMax);
-            console.log('niceMin : ' + niceMin);
-            console.log('yTickNumber : ' + yTickNumber);
-
-            let stepx = Math.ceil((chartHeight) / yTickNumber);  
-            console.log('stepx : ' + stepx);
-            let yTick = niceMax;
-
-            ctx.save();
-            for(let x = topPadding; x < chartHeight + topPadding; x += stepx)
-            {
-                ctx.beginPath();
-                ctx.lineWidth = 0.5;
-                if(yTick === 0)
-                {
-                    ctx.lineWidth = 1;
+                return{
+                    width, height, leftPadding,
+                    rightPadding, topPadding, bottomPadding,
+                    chartWidth, chartHeight
                 }
-
-                Draw.yTickLabel(yTick, leftPadding - 20, x);
-
-                ctx.moveTo(leftPadding - 10, x);
-                ctx.lineTo(leftPadding + chartWidth, x);
-                yTick -= yTickStep;
-                ctx.stroke();
-            }
-            ctx.restore();
-
-
-            Helper.drawingRect(ctx); // for debug only
-
         },
-        yTickLabel(tick, x, y)
+        yGridWithLabel(label)
         {
             let ctx = this.getContext();
-            let yTick = tick.toFixed(1);
-            ctx.fillText(yTick, x, y);
+            let options = this.drawOptions();
+
+            let labelLength = label.length || 1;
+            let stepy = options.chartWidth / (labelLength - 1);
+            
+            ctx.save();
+            for(let y = options.leftPadding, yAxes = 0; 
+                y <= options.chartWidth + options.leftPadding; y += stepy, yAxes++)
+            {
+                ctx.beginPath();
+                ctx.moveTo(y, options.topPadding);
+                ctx.lineTo(y, options.chartHeight + 0.5);
+                Draw.yAxisLabel(label[yAxes], y, options.chartHeight + options.bottomPadding - 20);
+                ctx.stroke();
+            }
+            ctx.restore();
         },
-        xAxisLabel(string, x, y)
+        yAxisLabel(string, x, y)
         {
             if(typeof string === 'undefined' && !string) return;
             var ctx = this.getContext();
             ctx.fillText(string, x, y);
         },
+        xGridWithLable(dataPoint, max, min)
+        {
+            let ctx = this.getContext();
+            let options = this.drawOptions();
+
+            let nice, niceMax, niceMin, xTickStep, xTickNumber;
+            if(max !== min)
+            {
+                nice = Helper.niceScale(min, max);
+                niceMax = nice.niceMaximum;
+                niceMin = nice.niceMinimum;
+                xTickStep = nice.tickSpacing;
+                xTickNumber = Helper.yTickNumFunc(niceMax, niceMin, xTickStep);
+            }else{
+                xTickStep = 0.2;
+                niceMax = max + (xTickStep * 5);
+                niceMin = max - (xTickStep * 5);
+                xTickNumber = 11;
+            }
+
+            console.log('tickStep: ' + xTickStep);
+            console.log('niceMax : ' + niceMax);
+            console.log('niceMin : ' + niceMin);
+            console.log('xTickNumber : ' + xTickNumber);
+
+            let stepx = Math.ceil((options.chartHeight) / xTickNumber);  
+            let xTick = niceMax;
+
+            ctx.save();
+            for(let x = options.topPadding;
+                x < options.chartHeight + options.topPadding;
+                x += stepx)
+            {
+                ctx.beginPath();
+                ctx.lineWidth = 0.5;
+                if(xTick === 0)
+                {
+                    ctx.lineWidth = 1;
+                }
+
+                Draw.xTickLabel(xTick, options.leftPadding - 20, x);
+
+                ctx.moveTo(options.leftPadding - 10, x);
+                ctx.lineTo(options.leftPadding + options.chartWidth, x);
+                xTick -= xTickStep;
+                ctx.stroke();
+            }
+            ctx.restore();
+        },
+        xTickLabel(tick, x, y)
+        {
+            let ctx = this.getContext();
+            let xTick = tick.toFixed(1);
+            ctx.fillText(xTick, x, y);
+        },
+        drawGrid(data)
+        {
+            console.log(data);
+            let ctx = this.getContext();
+
+            ctx.strokeStyle = 'gray';
+            ctx.lineWidth = 0.5;
+
+            let fontSize = globalDefaults.defaultFontSize,
+            fontStyle = fontSize + 'px ' + 'Arial';
+            ctx.font = fontStyle,
+            ctx.textAlign = 'center',
+            ctx.textBaseline = 'middle';
+
+            let label = data.labels;
+            
+            Draw.yGridWithLabel(label);
+            
+
+            let dataPoint = data.datasets[0].data;
+            let maxValue = Math.max.apply(null, dataPoint);
+            let minValue = Math.min.apply(null, dataPoint);
+
+            Draw.xGridWithLable(dataPoint, maxValue, minValue);
+
+            console.log(maxValue);
+            console.log(minValue);
+
+            Helper.drawingRect(ctx); // for debug only
+
+        },
         axisTitles(scales, axesType)
         {
-
             var labelString,
                 fontStyle,
                 width,
@@ -483,7 +488,6 @@ let config =
             ctx.beginPath();
             //ctx.moveTo();
             //ctx.arc();
-
         },
         clearRect()
         {
@@ -499,12 +503,6 @@ let config =
             Draw.drawGrid(data);
 
             Draw.dataPoint(data);
-
-            /*
-            datasets.forEach((datas) => {
-                Draw.drawGrid(datas);
-            })
-            */
 
             for(let axes in opts.scales)
             {   
@@ -539,7 +537,9 @@ let config =
         return {
             update : function(array)
             {   
-                me.config.datasets[0].data = array;
+                console.log(me.config);
+                Helper.computeSize(me.ctx);
+                Draw.baseCanvas(me.config);
                 /*
                 me.config.data.datasets.forEach(function(dataset) {
                     dataset.data = dataset.data.map(function() {
@@ -547,8 +547,7 @@ let config =
                     });
                 });
                 */
-                Draw.clearRect();
-                Draw.baseCanvas(me.config);
+
             },
             values : function(){
                 return computedOptions;
@@ -560,10 +559,6 @@ let config =
     {
         let me = this;
         Draw.setContext(me.ctx);
-        
-        Helper.computeSize(me.ctx);
-        Draw.baseCanvas(me.config);
-
         me.bindEvent();
         return me;
     }; 
@@ -576,6 +571,8 @@ let config =
             Helper.resizeForResponsive(me.ctx);
             this.bindResizeEvent();
         }
+        Helper.computeSize(me.ctx);
+        Draw.baseCanvas(me.config);
     }
 
     JChart.prototype.resizeCanvas = function(size)
@@ -600,6 +597,7 @@ let config =
   
 
     window.JChart = JChart;
+
     var Samples = {};
     Samples.utils = {
         srand: function(seed) {
@@ -641,7 +639,8 @@ document.addEventListener('DOMContentLoaded', function()
     document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
-        var dummy = [38,20,74,-70,-68,16];
+        var dummy = [38,-20];
+        config.data.datasets[0].data = dummy;
         myChart.update(dummy);
     },false);
 
