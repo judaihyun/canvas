@@ -5,15 +5,11 @@ let config =
     data:{
         labels: [
             'January'
-            ,'February'
-            ,'March'
         ],
         datasets: [{
             label: 'firstLable',
             data: [
-//                4, -7, 4, 4, 6, 1
-//                13,-53,39,98,-72,36
-                -100, 140 
+                -47
             ]
         },{
             label: 'secondLable',
@@ -119,6 +115,7 @@ let config =
         }
     };
 
+
     let Helper = 
     {
         isExist(value)
@@ -147,10 +144,7 @@ let config =
               //  console.log(items, config[item]);
             return item;
         },
-        saveDrawingSurface(ctx)
-        {
-            this.baseCanvasImage = ctx.getImageData(0,0, ctx.canvas.width, ctx.canvas.height);
-        },
+        
         resizeForResponsive(ctx)
         {
             console.warn('resizeForResponsive on');
@@ -213,7 +207,9 @@ let config =
 
             function calculate() {
                 range = niceNum(maxPoint - minPoint, false);
+                console.log('range : '+range);
                 tickSpacing = niceNum(range / (maxTicks - 1), true);
+                console.log('tickSpace : ' + tickSpacing);
                 niceMin =
                     Math.floor(minPoint / tickSpacing) * tickSpacing;
                 niceMax =
@@ -227,6 +223,7 @@ let config =
 
                 exponent = Math.floor(Math.log10(localRange));
                 fraction = localRange / Math.pow(10, exponent);
+                console.log('fraction : ' + fraction);
 
                 if (round) {
                     if (fraction < 1.5)
@@ -250,14 +247,6 @@ let config =
                 return niceFraction * Math.pow(10, exponent);
             }
 
-        },
-        yTickNumFunc(_max, _min, step){
-            var max = _max;
-            var min = _min;
-            if(max < -1) max *= -1;
-            if(min < -1) min *= -1;
-            
-            return (max + min) / step + 1;
         },
         drawingRect(ctx) // for debug only
         {
@@ -287,6 +276,7 @@ let config =
             })();
 
             
+          
             /*
             (function yTickLabel(){
                 ctx.save();
@@ -298,7 +288,7 @@ let config =
                             computedOptions.layout.chartHeight);
                 ctx.restore();
             })();
-            
+
             (function bottomLable(){
                 ctx.save();
                 ctx.strokeStyle = 'blue';
@@ -309,8 +299,13 @@ let config =
                             computedOptions.layout.bottomLable.height);
                 ctx.restore();
             })();
+
             */
         }
+    };
+
+    let globalValue = {
+        dataXpoint : []
     };
     
     let Draw = {
@@ -348,6 +343,7 @@ let config =
                 ctx.moveTo(y, options.topPadding);
                 ctx.lineTo(y, options.chartHeight + 0.5);
                 Draw.yAxisLabel(label[yAxes], y, options.chartHeight + options.bottomPadding - 20);
+                globalValue.dataXpoint.push(y);
                 ctx.stroke();
             }
             ctx.restore();
@@ -358,7 +354,7 @@ let config =
             var ctx = this.getContext();
             ctx.fillText(string, x, y);
         },
-        xGridWithLable(dataPoint, max, min)
+        xGridWithLable(max, min)
         {
             let ctx = this.getContext();
             let options = this.drawOptions();
@@ -370,7 +366,10 @@ let config =
                 niceMax = nice.niceMaximum;
                 niceMin = nice.niceMinimum;
                 xTickStep = nice.tickSpacing;
-                xTickNumber = Helper.yTickNumFunc(niceMax, niceMin, xTickStep);
+                console.log('nice max ' + niceMax);
+                console.log('nice min ' + niceMin);
+                console.log('xTickStep : ' + xTickStep);
+                xTickNumber = (niceMax - niceMin) / xTickStep + 1;
             }else{
                 xTickStep = 0.2;
                 niceMax = max + (xTickStep * 5);
@@ -436,7 +435,7 @@ let config =
             let maxValue = Math.max.apply(null, dataPoint);
             let minValue = Math.min.apply(null, dataPoint);
 
-            Draw.xGridWithLable(dataPoint, maxValue, minValue);
+            Draw.xGridWithLable(maxValue, minValue);
 
             console.log(maxValue);
             console.log(minValue);
@@ -489,12 +488,6 @@ let config =
             //ctx.moveTo();
             //ctx.arc();
         },
-        clearRect()
-        {
-            let ctx = this.getContext();
-            ctx.save();
-            ctx.clearRect(30,30,30,computedOptions.layout.chartHeight);
-        },
         baseCanvas(config)
         {
             let opts = config.options;
@@ -502,7 +495,7 @@ let config =
 
             Draw.drawGrid(data);
 
-            Draw.dataPoint(data);
+            //Draw.dataPoint(data);
 
             for(let axes in opts.scales)
             {   
@@ -535,10 +528,11 @@ let config =
         me.config = Helper.initConfig(ctx, config);
         me.initialize();
         return {
-            update : function(array)
+            update : function()
             {   
                 console.log(me.config);
                 Helper.computeSize(me.ctx);
+                me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
                 Draw.baseCanvas(me.config);
                 /*
                 me.config.data.datasets.forEach(function(dataset) {
@@ -598,6 +592,13 @@ let config =
 
     window.JChart = JChart;
 
+   
+});
+
+
+document.addEventListener('DOMContentLoaded', function()
+{
+
     var Samples = {};
     Samples.utils = {
         srand: function(seed) {
@@ -618,11 +619,6 @@ let config =
     var randomScalingFactor = function() {
         return Math.round(Samples.utils.rand(-100, 100));
     };
-});
-
-
-document.addEventListener('DOMContentLoaded', function()
-{
 
     let canvas = document.getElementById('myChart');
     let ctx = canvas.getContext('2d');
@@ -637,11 +633,11 @@ document.addEventListener('DOMContentLoaded', function()
     document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
     document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
     document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
-
     document.getElementById('chartUpdate').addEventListener('click', function(){
-        var dummy = [38,-20];
+        var dummy = [randomScalingFactor(),randomScalingFactor()];
+        //config.options.scales.xAxes[0].scaleLabel.labelString = 'test';
         config.data.datasets[0].data = dummy;
-        myChart.update(dummy);
+        myChart.update();
     },false);
 
 
