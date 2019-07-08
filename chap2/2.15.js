@@ -127,8 +127,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
         function updateRubberband(loc)
         {
-            updateRubberbandRectangle(loc);
-            drawRubberbandShape(loc);
+            //updateRubberbandRectangle(loc);
+            //drawRubberbandShape(loc);
         }
 
         function updateCircle(loc)

@@ -16,7 +16,12 @@ canChart = () =>
     let config = {
         type:'line',
         data:{
+            labels: [
+             'test'
+            ],
             datasets: [{
+                label:'',
+                data:[],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -60,11 +65,36 @@ canChart = () =>
             hover:{
                 mode:'nearest',
                 intersect:true
+            },
+            responsive: true,
+        layout: {
+            padding: {
+                top: 40.5,
+				right: 40,
+				bottom: 60.5,
+				left: 65.5
             }
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Month'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Value'
+                }
+            }]
+        } 
         }
     }
 
-    const chart = new Chart(ctx);
+    const chart = new JChart(ctx,config);
 
     return chart;
 }
@@ -79,7 +109,6 @@ function reqListener ()
 function addData() {
     let xCount = 0;
     return function(chart, data){
-
         if(chart.data.labels.length > 5)
         {
             chart.data.datasets[0].data.shift();

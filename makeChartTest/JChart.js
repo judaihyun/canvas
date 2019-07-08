@@ -1,52 +1,4 @@
 
-let config = 
-{
-    type:'line',
-    data:{
-        labels: [
-            'January','test','sf'
-        ],
-        datasets: [{
-            label: 'firstLable',
-            data: [
-//                -50,1.5,0
-                 10,1.5,0
-            ]
-        },{
-            label: 'secondLable',
-            data: [
-//                2,3
-            ]
-        }]
-    },
-    options:{
-        responsive: true,
-        layout: {
-            padding: {
-                top: 40.5,
-				right: 40,
-				bottom: 60.5,
-				left: 65.5
-            }
-        },
-        scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Month'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Value'
-                }
-            }]
-        } 
-    } 
-};
 
 (function(global, factory)
 {
@@ -72,7 +24,9 @@ let config =
 		titleSpacing: 2,
 		titleMarginBottom: 6,
 		titleFontColor: '#fff',
-		titleAlign: 'left',
+        titleAlign: 'left',
+        gridlineColor: 'rgba(0,0,0,1)',
+        gridLineWidth: 0.5
     };
 
     let SIZE = {
@@ -103,10 +57,32 @@ let config =
 				bottom: 0.5,
 				left: 0.5
 			}
-		},
+        },
+        scales:{
+            yAxes:[{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                },
+                gridLines:{
+                    color: globalDefaults.gridlineColor,
+                    lineWidth: globalDefaults.gridLineWidth 
+                }
+            }],
+            xAxes:[{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                },
+                gridLines:{
+                    color: globalDefaults.gridlineColor,
+                    lineWidth: globalDefaults.gridLineWidth
+                }
+            }]
+        },
         onClick: null,
         maintainAspectRatio: true,
-        responsive: true,
+        responsive: false,
         responsiveAnimationDuration: 0
     };
 
@@ -124,35 +100,46 @@ let config =
             if(typeof value === 'undefined' && !value) return false;
             return true;
         },
+        contextValidator(ctx, config)
+        {
+            if(!this.isExist(ctx)) return;
+            if(!this.isExist(config)) return;
+
+            // TODO  config validate
+            for(let value in config)
+                console.log(value, config[value]);
+            return ctx;
+        },
         initConfig(ctx, config)
         {
             if(!Helper.isExist(config.options))
             {
                 config.options = defaultsOptions;
             }
-            //TODO make computedOptions
+            if(!Helper.isExist(config.options.layout.padding))
+            {
+                config.options.layout.padding = defaultsOptions.layout.padding;
+            }
+            if(!Helper.isExist(config.options.scales.xAxes[0].gridLines))
+            {
+                config.options.scales.xAxes[0].gridLines = defaultsOptions.scales.xAxes[0].gridLines;
+            }
+            if(!Helper.isExist(config.options.scales.yAxes[0].gridLines))
+            {
+                config.options.scales.yAxes[0].gridLines = defaultsOptions.scales.yAxes[0].gridLines;
+            }
+            console.log(config.options.scales);
+
             computedOptions = Object.assign(computedOptions, config.options );
+            console.log(computedOptions);
             
             return config;
         },
-        contextValidator(item, config)
-        {
-            if(!this.isExist(item)) return;
-            if(!this.isExist(config)) return;
-
-            // TODO  config validate
-            for(let items in config)
-              //  console.log(items, config[item]);
-            return item;
-        },
-        
         resizeForResponsive(ctx)
         {
             console.warn('resizeForResponsive on');
             ctx.canvas.width = window.innerWidth,
             ctx.canvas.height = (ctx.canvas.width / 21) * 9;  // aspect ratio 21:9
-            //console.log('window.innerHeight : ' + window.innerHeight + ', window.innerWidth : ' + window.innerWidth);
-            //console.log('canvas.width : ' + ctx.canvas.width + ', canvas.height : ' + ctx.canvas.height);
         },
         computeSize(ctx)
         {
@@ -169,17 +156,7 @@ let config =
                     height : computedOptions.layout.padding.bottom +
                             computedOptions.layout.chartHeight
                 };
-                /*
-                computedOptions.layout.xRangeAxis = {
-                    width : computedOptions.layout.chartWidth,
-                    height : computedOptions.
-                }
-                */
-            
             }
-            //console.log(ctx.canvas.height);
-            //console.log(computedOptions.layout.chartHeight);
-            //console.log(computedOptions.layout.bottomLable.height);
         },
         niceScale(min, max)
         {
@@ -187,7 +164,6 @@ let config =
                 to get a 'nice number' algorithm. detail below 
             https://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
             */
-
             var minPoint = min;
             var maxPoint = max;
             var maxTicks = 11;
@@ -269,8 +245,6 @@ let config =
 //                            console.log('drawingRect height : ' + computedOptions.layout.chartHeight);
                 ctx.restore();
             })();
-
-            
           
             /*
             (function yTickLabel(){
@@ -309,18 +283,20 @@ let config =
             let ctx = this.getContext();
             let width = ctx.canvas.width,
                 height = ctx.canvas.height;
-            
+
             let leftPadding = computedOptions.layout.padding.left,
                 rightPadding = computedOptions.layout.padding.right,
                 topPadding = computedOptions.layout.padding.top,
                 bottomPadding = computedOptions.layout.padding.bottom,
                 chartWidth = computedOptions.layout.chartWidth,
                 chartHeight = computedOptions.layout.chartHeight;
-                return{
-                    width, height, leftPadding,
-                    rightPadding, topPadding, bottomPadding,
-                    chartWidth, chartHeight
-                }
+
+          
+            return{
+                width, height, leftPadding,
+                rightPadding, topPadding, bottomPadding,
+                chartWidth, chartHeight
+            }
         },
         yGridWithLabel(label) /* it depends on labels */ 
         {
@@ -332,7 +308,12 @@ let config =
             let height = options.chartHeight + options.topPadding;
             let width = options.chartWidth + options.leftPadding;
             
+
+            dataPoints[0].xPoint.splice(0);
             ctx.save();
+            ctx.strokeStyle = computedOptions.scales.yAxes[0].gridLines.color;
+            ctx.lineWidth = computedOptions.scales.yAxes[0].gridLines.lineWidth;
+           
             for(let x = options.leftPadding, yAxes = 0; 
                 x <= width; x += stepx, yAxes++)
             {
@@ -344,6 +325,7 @@ let config =
                 Draw.bottomLabel(label[yAxes], x, options.chartHeight + options.bottomPadding);
                 ctx.stroke();
             }
+
             ctx.restore();
         },
         bottomLabel(string, x, y)
@@ -371,8 +353,6 @@ let config =
                 niceMin = max - (tickStep * 5);
                 yTickNumber = 11;
             }
-
-         
             
             
             let stepy = Math.ceil((options.chartHeight) / yTickNumber);  
@@ -381,6 +361,9 @@ let config =
             let width = options.chartWidth + options.leftPadding;
             dataPoints.tickNumber = yTickNumber;
             dataPoints.niceMax = niceMax;
+            dataPoints.niceMin = niceMin;
+            dataPoints.tickStep = tickStep;
+            dataPoints.stepy = stepy;
             console.log('-----------');
             console.log('tickStep: ' + tickStep);
             console.log('niceMax : ' + niceMax);
@@ -391,19 +374,21 @@ let config =
             console.log('-----------');
 
             ctx.save();
+            ctx.strokeStyle = computedOptions.scales.xAxes[0].gridLines.color;
+            let lineWidth = computedOptions.scales.xAxes[0].gridLines.lineWidth;
+
+
             for(let y = options.topPadding;
                 y < height;
                 y += stepy)
             {
                 ctx.beginPath();
-                ctx.lineWidth = 0.5;
+                ctx.lineWidth = lineWidth;
                 if(yTick === 0)
                 {
-                    ctx.lineWidth = 1;
+                    ctx.lineWidth = lineWidth * 2;
                 }
-
                 Draw.yTickLabel(yTick, options.leftPadding - 20, y);
-                //console.log(y);
                 ctx.moveTo(options.leftPadding - 10, y);
                 ctx.lineTo(width, y);
                 yTick -= tickStep;
@@ -421,9 +406,6 @@ let config =
         drawGrid(data)
         {
             let ctx = this.getContext();
-
-            ctx.strokeStyle = 'gray';
-            ctx.lineWidth = 0.5;
 
             let fontSize = globalDefaults.defaultFontSize,
             fontStyle = fontSize + 'px ' + 'Arial';
@@ -482,22 +464,28 @@ let config =
         {
             let ctx = this.getContext();
             let options = this.drawOptions();
-            var height = dataPoints.tickHeight - options.topPadding;
-            var stepy = (height / dataPoints.niceMax);
+            let niceMax = dataPoints.niceMax;
+            let niceMin = dataPoints.niceMin;
+            let tickStep = dataPoints.tickStep;
+            let height = dataPoints.tickHeight - options.topPadding;
+            let stepy = dataPoints.stepy;
 
             console.log('Draw.point()'); 
-            /*
-            console.log('dataPoints.tickHeight : ' + dataPoints.tickHeight);
-            console.log('dataPoints.xPoint : ' + dataPoints[0].xPoint);
-            */
             console.log('height : ' + height);
             console.log('stepy : ' + stepy);
-            console.log(data);
 
             data.forEach(function(i, index){ // data
                 var data = i;
+                let y;
+                if(data === 0){
+                    y = (niceMax / tickStep) * stepy;
+                }else if(data < 0){
+                    data*=-1;
+                    y = ((stepy / tickStep) * data) + ((niceMax / tickStep) * stepy );
+                }else if(data > 0){
+                    y = ((stepy / tickStep ) * niceMax) - (stepy / tickStep) * data;
+                }
                 let x = xPoint[index];
-                let y = height - (stepy * data);
                 console.log('x : ' + x);
                 console.log('y : ' + y);
                 ctx.save();
@@ -507,8 +495,6 @@ let config =
                 ctx.fill();
                 ctx.restore();
             });
-            //ctx.moveTo();
-            //ctx.arc();
         },
         baseCanvas(config)
         {
@@ -538,7 +524,7 @@ let config =
         }
     }
 
-   
+
     let JChart = function(ctx, config)
     {
         if(!(this instanceof JChart))
@@ -549,7 +535,7 @@ let config =
         let me = this;
         me.resizeEvent = new Event('resizeEvt');
         me.ctx = Helper.contextValidator(ctx, config);
-        me.canvas = ctx.canvas;
+        me.canvas = me.ctx.canvas;
         me.config = Helper.initConfig(ctx, config);
         me.initialize();
         return {
@@ -559,16 +545,8 @@ let config =
                 Helper.computeSize(me.ctx);
                 me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
                 Draw.baseCanvas(me.config);
-                /*
-                me.config.data.datasets.forEach(function(dataset) {
-                    dataset.data = dataset.data.map(function() {
-                        return randomScalingFactor();
-                    });
-                });
-                */
-
             },
-            values : function(){
+            getComputed : function(){
                 return computedOptions;
             }
         }
@@ -597,7 +575,6 @@ let config =
 
     JChart.prototype.resizeCanvas = function(size)
     {
-        //console.log(`width : ${size.detail.inWidth}, height : ${size.detail.inHeight}`);
         let me = this;
         me.canvas.width = size.detail.inWidth;
         me.canvas.height = (me.canvas.width / 21) * 9;  // aspect ratio 21:9
@@ -621,59 +598,3 @@ let config =
    
 });
 
-
-document.addEventListener('DOMContentLoaded', function()
-{
-
-    var Samples = {};
-    Samples.utils = {
-        srand: function(seed) {
-            this._seed = seed;
-        },
-    
-        rand: function(min, max) {
-            var seed = this._seed;
-            min = min === undefined ? 0 : min;
-            max = max === undefined ? 1 : max;
-            this._seed = (seed * 9301 + 49297) % 233280;
-            var result = min + (this._seed / 233280) * (max - min);
-            return result;
-        }
-    }
-    
-    Samples.utils.srand(Date.now());
-    var randomScalingFactor = function() {
-        return Math.round(Samples.utils.rand(-100, 100));
-    };
-
-    let canvas = document.getElementById('myChart');
-    let ctx = canvas.getContext('2d');
-    
-    let myChart = new JChart(ctx, config);
-    //let chart = new Chart(ctx, config);
-    let value = myChart.values();
-    updateEl();
-    window.addEventListener('resize',function(){
-        value = myChart.values();
-        updateEl();
-    },false);
-  
-    function updateEl(){
-        document.getElementById('chartWidth').innerHTML = 'chartWidth : ' + value.layout.chartWidth;
-        document.getElementById('chartHeight').innerHTML = 'chartHeight : ' + value.layout.chartHeight;
-        document.getElementById('topPadding').innerHTML = 'topPadding : ' + value.layout.padding.top;
-        document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
-        document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
-        document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
-    };
-
-    document.getElementById('chartUpdate').addEventListener('click', function(){
-        var dummy = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor()];
-        //config.options.scales.xAxes[0].scaleLabel.labelString = 'test';
-        console.warn('dummy : ' + dummy);
-        config.data.datasets[0].data = dummy;
-        myChart.update();
-    },false);
-
-
-},false);

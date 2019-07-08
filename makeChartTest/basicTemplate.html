@@ -8,7 +8,17 @@
                 margin:10px;
                 padding:10px;
                 background:#ffffff;
-                border: thin inset #aaaaaa
+                border: thin inset #aaaaaa;
+                cursor: crosshair;
+            }
+            #pos{
+                position: absolute;
+                font-size: 15px;
+                font-weight: bold;
+                top: 5px;
+                left: 5px;
+                color: red;
+                background-color:yellow;
             }
         </style>
         <!--
@@ -16,7 +26,10 @@
         -->
             <script src='../node_modules/chart.js/dist/Chart.js'></script>
         
-        <script src='myChart.js'></script>
+        <script src='canvasGuide.js'></script>
+        <script src='randomGenerator.js'></script>
+        <script src='JChart.js'></script>
+        <script src='init.js'></script>
     </head>
     <body>
         <canvas id="myChart" width="600" height="350">
@@ -30,6 +43,8 @@
             <div id='bottomPadding'></div>
             <div id='topPadding'></div>
         </div>
+        <div id='pos'></div>
+        <div id='width'></div>
         <button type='button' id='chartUpdate'>update</button>
     </body>
 </html>
