@@ -4,12 +4,12 @@ let config =
     type:'line',
     data:{
         labels: [
-            'January','test','t2est'
+            'January','test','t2est','tt','234'
         ],
         datasets: [{
             label: 'firstLable',
             data: [
-                -50,1.5,0
+                -50,1.5,-30
             ]
         },{
             label: 'secondLable',
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function()
     };
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
-        var dummy = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor()];
+        var dummy = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(), randomScalingFactor()];
         //config.options.scales.xAxes[0].scaleLabel.labelString = 'test';
         console.warn('dummy : ' + dummy);
         config.data.datasets[0].data = dummy;

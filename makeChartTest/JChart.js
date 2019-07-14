@@ -33,8 +33,38 @@
         inWidth : null,
         inHeight : null,
     }
+    const defaultConfig = 
+    {
+        options:{
+            responsive: true,
+            layout: {
+                padding: {
+                    top: 40.5,
+                    right: 40,
+                    bottom: 60.5,
+                    left: 65.5
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }]
+            } 
+        }
+    }
 
-    const defaultsOptions = 
+    const defaultOptions = 
     {
         elements:{},
         events: [
@@ -112,26 +142,22 @@
         },
         initConfig(ctx, config)
         {
+            console.warn('test');
+
             if(!Helper.isExist(config.options))
             {
-                config.options = defaultsOptions;
+                config.options = defaultConfig.options;
             }
-            if(!Helper.isExist(config.options.layout.padding))
-            {
-                config.options.layout.padding = defaultsOptions.layout.padding;
-            }
+
             if(!Helper.isExist(config.options.scales.xAxes[0].gridLines))
             {
-                config.options.scales.xAxes[0].gridLines = defaultsOptions.scales.xAxes[0].gridLines;
+                config.options.scales.xAxes[0].gridLines = defaultOptions.scales.xAxes[0].gridLines;
             }
             if(!Helper.isExist(config.options.scales.yAxes[0].gridLines))
             {
-                config.options.scales.yAxes[0].gridLines = defaultsOptions.scales.yAxes[0].gridLines;
+                config.options.scales.yAxes[0].gridLines = defaultOptions.scales.yAxes[0].gridLines;
             }
-            console.log(config.options.scales);
-
             computedOptions = Object.assign(computedOptions, config.options );
-            console.log(computedOptions);
             
             return config;
         },
@@ -274,7 +300,8 @@
     };
 
     let dataPoints = [{
-        xPoint : []
+        xPoint : [],
+        yPoint : []
     }];
     
     let Draw = {
@@ -460,7 +487,7 @@
 
             ctx.restore();
         },
-        point(data, xPoint)
+        linePoint(data, xPoint)
         {
             let ctx = this.getContext();
             let options = this.drawOptions();
@@ -486,8 +513,8 @@
                     y = ((stepy / tickStep ) * niceMax) - (stepy / tickStep) * data;
                 }
                 let x = xPoint[index];
-                console.log('x : ' + x);
-                console.log('y : ' + y);
+                dataPoints[0].yPoint.push(y + options.topPadding);
+              
                 ctx.save();
                 ctx.beginPath();
                 ctx.fillStyle = 'blue';
@@ -495,6 +522,30 @@
                 ctx.fill();
                 ctx.restore();
             });
+        },
+        lineCurve()
+        {
+            let ctx = this.getContext();
+            ctx.save();
+            ctx.beginPath();
+
+            let length = dataPoints[0].xPoint.length;
+            let xPoint = dataPoints[0].xPoint;
+            let yPoint = dataPoints[0].yPoint; 
+            console.log(dataPoints[0].yPoint);
+            ctx.moveTo(xPoint[0], yPoint[0]);
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 2;
+            for(let i = 0; i < length; i++)
+            {
+                console.log('x : ' + xPoint[i]);
+                console.log('y : ' + yPoint[i]);
+                ctx.lineTo(xPoint[i], yPoint[i]);
+                ctx.stroke();
+            }
+
+            dataPoints[0].yPoint.splice(0);
+            ctx.restore();
         },
         baseCanvas(config)
         {
@@ -504,9 +555,10 @@
             Draw.drawGrid(data);
 
             data.datasets.forEach(function(i, index){
-                var xPoint = dataPoints[0].xPoint;
-                Draw.point(i.data, xPoint);
+                Draw.linePoint(i.data, dataPoints[0].xPoint);
             });
+
+            Draw.lineCurve();
 
             for(let axes in opts.scales)
             {   

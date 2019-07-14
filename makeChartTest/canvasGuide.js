@@ -108,4 +108,4 @@ Guide = function(ctx, canvas)
         setDrawWidthEl, setPosEl
     }
 
-}
+};
