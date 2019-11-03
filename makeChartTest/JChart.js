@@ -29,10 +29,7 @@
         gridLineWidth: 0.5
     };
 
-    let SIZE = {
-        inWidth : null,
-        inHeight : null,
-    }
+    /* JChart 생성시 config가 비어있을 경우 defaultConfig */
     const defaultConfig = 
     {
         options:{
@@ -45,27 +42,7 @@
                     left: 65.5
                 }
             },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Value'
-                    }
-                }]
-            } 
-        }
-    }
-
-    const defaultOptions = 
-    {
+        },
         elements:{},
         events: [
             'mousemove',
@@ -74,19 +51,11 @@
             'touchstart',
             'touchmove'
         ],
-        hover: {
+        hover: { /* incompleted */
             onHover: null,
             mode: 'nearest',
             intersect: true,
             animationDuration: 400
-        },
-        layout: {
-			padding: {
-				top: 0.5,
-				right: 0,
-				bottom: 0.5,
-				left: 0.5
-			}
         },
         scales:{
             yAxes:[{
@@ -116,6 +85,7 @@
         responsiveAnimationDuration: 0
     };
 
+    /* 실제 반영된 options*/
     let computedOptions = {
         layout : {
             bottomLable : { }
@@ -127,22 +97,28 @@
     {
         isExist(value)
         {
-            if(typeof value === 'undefined' && !value) return false;
+            if(typeof value === 'undefined' ) return false;
             return true;
         },
         contextValidator(ctx, config)
         {
-            if(!this.isExist(ctx)) return;
-            if(!this.isExist(config)) return;
+            if(!this.isExist(ctx)){
+                console.error('ctx undefined');
+                return -1;
+            } 
+            if(!this.isExist(config))
+            {
+                console.error('config undefined')
+                return -1;
+            } 
 
-            // TODO  config validate
+            // TODO validate config{}
             for(let value in config)
                 console.log(value, config[value]);
             return ctx;
         },
         initConfig(ctx, config)
         {
-            console.warn('test');
 
             if(!Helper.isExist(config.options))
             {
@@ -151,11 +127,11 @@
 
             if(!Helper.isExist(config.options.scales.xAxes[0].gridLines))
             {
-                config.options.scales.xAxes[0].gridLines = defaultOptions.scales.xAxes[0].gridLines;
+                config.options.scales.xAxes[0].gridLines = defaultConfig.scales.xAxes[0].gridLines;
             }
             if(!Helper.isExist(config.options.scales.yAxes[0].gridLines))
             {
-                config.options.scales.yAxes[0].gridLines = defaultOptions.scales.yAxes[0].gridLines;
+                config.options.scales.yAxes[0].gridLines = defaultConfig.scales.yAxes[0].gridLines;
             }
             computedOptions = Object.assign(computedOptions, config.options );
             
@@ -587,8 +563,12 @@
         let me = this;
         me.resizeEvent = new Event('resizeEvt');
         me.ctx = Helper.contextValidator(ctx, config);
+        if(me.ctx < 0)
+            return -1;
+
         me.canvas = me.ctx.canvas;
         me.config = Helper.initConfig(ctx, config);
+
         me.initialize();
         return {
             update : function()
@@ -598,7 +578,7 @@
                 me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
                 Draw.baseCanvas(me.config);
             },
-            getComputed : function(){
+            getCurrentOpt : function(){
                 return computedOptions;
             }
         }
@@ -638,9 +618,10 @@
     {
         document.addEventListener('resizeEvt', this.resizeCanvas.bind(this));
         window.addEventListener('resize',function(e){
-            SIZE.inWidth = e.target.innerWidth;
-            SIZE.inHeight = e.target.innerHeight;
-            document.dispatchEvent(new CustomEvent('resizeEvt', {detail:SIZE}));
+            let canvasSize = {};
+            canvasSize.inWidth = e.target.innerWidth;
+            canvasSize.inHeight = e.target.innerHeight;
+            document.dispatchEvent(new CustomEvent('resizeEvt', {detail:canvasSize}));
         },false);
     }
   

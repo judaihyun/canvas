@@ -67,23 +67,22 @@ document.addEventListener('DOMContentLoaded', function()
    
     
     let myChart = new JChart(ctx, config);
-    let value = myChart.getComputed();
-
+    let value = myChart.getCurrentOpt();
 
 
     window.addEventListener('resize',function(){
-        value = myChart.getComputed();
+        value = myChart.getCurrentOpt();
         updateEl();
     },false);
   
-    (function updateEl(){
+    function updateEl(){
         document.getElementById('chartWidth').innerHTML = 'chartWidth : ' + value.layout.chartWidth;
         document.getElementById('chartHeight').innerHTML = 'chartHeight : ' + value.layout.chartHeight;
         document.getElementById('topPadding').innerHTML = 'topPadding : ' + value.layout.padding.top;
         document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
         document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
         document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
-    })();
+    };
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
         var dummy = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(), randomScalingFactor()];
