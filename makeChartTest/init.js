@@ -4,21 +4,25 @@ let config =
     type:'line',
     data:{
         labels: [
-            'January','test','t2est','tt','234'
+            'January','Feb','Mar','Apr','May'
         ],
         datasets: [{
             label: 'firstLable',
             data: [
                 -50,1.5,-30
             ]
-        },{
+        }/*,{
             label: 'secondLable',
             data: [
                 2,3,50
             ]
-        }]
+        }*/]
     },
     options:{
+        ratio:{
+            x: 21,
+            y: 9
+        },
         responsive: true,
         layout: {
             padding: {
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function()
     let myChart = new JChart(ctx, config);
     let value = myChart.getCurrentOpt();
 
-
+    updateEl();
     window.addEventListener('resize',function(){
         value = myChart.getCurrentOpt();
         updateEl();
@@ -90,6 +94,15 @@ document.addEventListener('DOMContentLoaded', function()
         console.warn('dummy : ' + dummy);
         config.data.datasets[0].data = dummy;
         myChart.update();
+    },false);
+
+    document.getElementById('changeRatio').addEventListener('click',()=>{
+        let ratioX = document.getElementById('ratioX').value;
+        let ratioY = document.getElementById('ratioY');
+        console.log(ratioX);
+        config.options.ratio.x = ratioX;
+        config.options.ratio.y = ratioY;
+        myChart.changeRatio();
     },false);
 
 

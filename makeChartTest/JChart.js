@@ -1,5 +1,6 @@
 
 
+
 (function(global, factory)
 {
     // UMD,  if module object exists, then CommonJS
@@ -11,6 +12,17 @@
 
 })(window, function(window){
     'use strict';
+
+    //const DEBUG_MODE = true;
+
+//    const RATIO_X = 21;
+ //   const RATIO_Y = 9;
+
+    function debugConsole(str)
+    {
+        if(typeof DEBUG_MODE !== 'undefined' && DEBUG_MODE)
+            console.log(str);
+    }
 
     const globalDefaults = 
     {
@@ -29,7 +41,7 @@
         gridLineWidth: 0.5
     };
 
-    /* JChart 생성시 config가 비어있을 경우 defaultConfig */
+    /* JChart 생성시 config가 비어있을 경우 이 defaultConfig 값을 사용 */
     const defaultConfig = 
     {
         options:{
@@ -114,10 +126,10 @@
 
             // TODO validate config{}
             for(let value in config)
-                console.log(value, config[value]);
+                debugConsole(value, config[value]);
             return ctx;
         },
-        initConfig(ctx, config)
+        initConfig(config)
         {
 
             if(!Helper.isExist(config.options))
@@ -137,11 +149,39 @@
             
             return config;
         },
-        resizeForResponsive(ctx)
+        ratioCalculator(ctx)
         {
-            console.warn('resizeForResponsive on');
-            ctx.canvas.width = window.innerWidth,
-            ctx.canvas.height = (ctx.canvas.width / 21) * 9;  // aspect ratio 21:9
+            let obj = {};
+            let diagonal = 0;
+            console.log(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
+            let x = computedOptions.ratio.x;
+            let y = computedOptions.ratio.y;
+            console.log(`RATIO = ${x}:${y}`);
+
+            let w = ctx.canvas.width;
+            let h = ctx.canvas.height;
+
+            diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
+
+
+            console.log(`w=${w} h=${h}`);
+            console.log(`x=${x} y=${y}`);
+            console.log(`diagonal=${diagonal}`);
+
+            obj.width = diagonal * x / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
+            obj.height = diagonal * y / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
+            console.log(`ratio width=${obj.width},height=${obj.height}`);
+            return obj;
+        },
+        initCanvasSize(ctx)
+        {
+            var obj = this.ratioCalculator(ctx);
+            ctx.canvas.width = obj.width;
+            ctx.canvas.height = obj.height;
+            //ctx.canvas.width = window.innerWidth,
+            //ctx.canvas.height = (ctx.canvas.width / RATIO_WIDTH) * RATIO_HEIGHT;  // aspect ratio 21:9
+            console.log(`width : ${ctx.canvas.width}`);
+            console.log(`height : ${ctx.canvas.height}`);
         },
         computeSize(ctx)
         {
@@ -235,6 +275,7 @@
                 ctx.restore();
             })();
             
+            
             (function chartArea(){
 
                 ctx.save();
@@ -244,7 +285,6 @@
                             computedOptions.layout.padding.top,
                             computedOptions.layout.chartWidth,
                             computedOptions.layout.chartHeight);
-//                            console.log('drawingRect height : ' + computedOptions.layout.chartHeight);
                 ctx.restore();
             })();
           
@@ -367,14 +407,14 @@
             dataPoints.niceMin = niceMin;
             dataPoints.tickStep = tickStep;
             dataPoints.stepy = stepy;
-            console.log('-----------');
-            console.log('tickStep: ' + tickStep);
-            console.log('niceMax : ' + niceMax);
-            console.log('niceMin : ' + niceMin);
-            console.log('yTickNumber : ' + yTickNumber);
-            console.log('stepy : ' + stepy);
-            console.log('tickStep : ' + tickStep);
-            console.log('-----------');
+            debugConsole('-----------');
+            debugConsole('tickStep: ' + tickStep);
+            debugConsole('niceMax : ' + niceMax);
+            debugConsole('niceMin : ' + niceMin);
+            debugConsole('yTickNumber : ' + yTickNumber);
+            debugConsole('stepy : ' + stepy);
+            debugConsole('tickStep : ' + tickStep);
+            debugConsole('-----------');
 
             ctx.save();
             ctx.strokeStyle = computedOptions.scales.xAxes[0].gridLines.color;
@@ -473,9 +513,9 @@
             let height = dataPoints.tickHeight - options.topPadding;
             let stepy = dataPoints.stepy;
 
-            console.log('Draw.point()'); 
-            console.log('height : ' + height);
-            console.log('stepy : ' + stepy);
+            debugConsole('Draw.point()'); 
+            debugConsole('height : ' + height);
+            debugConsole('stepy : ' + stepy);
 
             data.forEach(function(i, index){ // data
                 var data = i;
@@ -508,14 +548,14 @@
             let length = dataPoints[0].xPoint.length;
             let xPoint = dataPoints[0].xPoint;
             let yPoint = dataPoints[0].yPoint; 
-            console.log(dataPoints[0].yPoint);
+            debugConsole(dataPoints[0].yPoint);
             ctx.moveTo(xPoint[0], yPoint[0]);
             ctx.strokeStyle = 'green';
             ctx.lineWidth = 2;
             for(let i = 0; i < length; i++)
             {
-                console.log('x : ' + xPoint[i]);
-                console.log('y : ' + yPoint[i]);
+                debugConsole('x : ' + xPoint[i]);
+                debugConsole('y : ' + yPoint[i]);
                 ctx.lineTo(xPoint[i], yPoint[i]);
                 ctx.stroke();
             }
@@ -557,26 +597,32 @@
     {
         if(!(this instanceof JChart))
         {
-            return new JChart();
+            return new JChart(ctx, config);
         };
 
         let me = this;
-        me.resizeEvent = new Event('resizeEvt');
+        //me.resizeEvent = new Event('resizeEvt');
         me.ctx = Helper.contextValidator(ctx, config);
         if(me.ctx < 0)
             return -1;
 
         me.canvas = me.ctx.canvas;
-        me.config = Helper.initConfig(ctx, config);
+        me.config = Helper.initConfig(config);
 
         me.initialize();
+        me.bindEvent();
+        me.baseDrawing();
         return {
             update : function()
             {   
-                console.log(me.config);
                 Helper.computeSize(me.ctx);
                 me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
                 Draw.baseCanvas(me.config);
+            },
+            changeRatio : function()
+            {
+               // TODO
+
             },
             getCurrentOpt : function(){
                 return computedOptions;
@@ -586,10 +632,8 @@
 
     JChart.prototype.initialize = function()
     {
-        let me = this;
-        Draw.setContext(me.ctx);
-        me.bindEvent();
-        return me;
+        Draw.setContext(this.ctx);
+        return this;
     }; 
 
     JChart.prototype.bindEvent = function()
@@ -598,33 +642,39 @@
         var responsive = config.options.responsive || false;
         if(responsive)
         {
-            Helper.resizeForResponsive(me.ctx);
-            this.bindResizeEvent();
+            me.bindResizeEvent();
         }
-        Helper.computeSize(me.ctx);
-        Draw.baseCanvas(me.config);
     }
 
-    JChart.prototype.resizeCanvas = function(size)
-    {
-        let me = this;
-        me.canvas.width = size.detail.inWidth;
-        me.canvas.height = (me.canvas.width / 21) * 9;  // aspect ratio 21:9
-        Helper.computeSize(me.ctx);
+    JChart.prototype.baseDrawing = function()
+    {   
+        Helper.initCanvasSize(this.ctx);
+        Helper.computeSize(this.ctx);
         Draw.baseCanvas(this.config);
     }
 
+   
     JChart.prototype.bindResizeEvent = function()
     {
-        document.addEventListener('resizeEvt', this.resizeCanvas.bind(this));
-        window.addEventListener('resize',function(e){
+        console.warn('responsive mode on');
+        document.addEventListener('resizeEvt', this.resizingCanvas.bind(this));
+
+        window.addEventListener('resize',function(win){
             let canvasSize = {};
-            canvasSize.inWidth = e.target.innerWidth;
-            canvasSize.inHeight = e.target.innerHeight;
+            canvasSize.inWidth = win.target.innerWidth;
+            canvasSize.inHeight = win.target.innerHeight;
             document.dispatchEvent(new CustomEvent('resizeEvt', {detail:canvasSize}));
         },false);
     }
-  
+
+    JChart.prototype.resizingCanvas = function(size)
+    {
+        let me = this;
+        me.canvas.width = size.detail.inWidth;
+        me.canvas.height = (me.canvas.width / 21) * 9;  // 가로를 21:9 비율로 채우기
+        Helper.computeSize(me.ctx);
+        Draw.baseCanvas(this.config);
+    } 
 
     window.JChart = JChart;
 

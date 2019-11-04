@@ -19,6 +19,9 @@
                 color: red;
                 background-color:yellow;
             }
+            .ratioBox{
+                width:2rem;
+            }
         </style>
         <script src='canvasGuideForDevelop.js'></script>
         <script src='randomGenerator.js'></script>
@@ -37,8 +40,16 @@
             <div id='bottomPadding'></div>
             <div id='topPadding'></div>
         </div>
-        <div id='pos'></div>
-        <div id='width'></div>
-        <button type='button' id='chartUpdate'>update</button>
+        <div id='pos'></div><br>
+        <div>
+            <label for='chartUpdate'>차트 갱신</label>
+            <button type='button' id='chartUpdate'>update</button>
+        </div>
+        <div>
+            <label for='changeRatio'>종횡비 변환</label>
+            <input type='text' class='ratioBox' id='ratioX'></input>
+            <input type='text' class='ratioBox' id='ratioY'></input>
+            <button type='button' id='changeRatio'>changeRatio</button>
+        </div>
     </body>
 </html>
