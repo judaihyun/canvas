@@ -1,6 +1,4 @@
 
-
-
 (function(global, factory)
 {
     // UMD,  if module object exists, then CommonJS
@@ -14,9 +12,6 @@
     'use strict';
 
     //const DEBUG_MODE = true;
-
-//    const RATIO_X = 21;
- //   const RATIO_Y = 9;
 
     function debugConsole(str)
     {
@@ -45,6 +40,10 @@
     const defaultConfig = 
     {
         options:{
+            ratio:{
+                x: 21,
+                y: 9
+            },
             responsive: true,
             layout: {
                 padding: {
@@ -145,6 +144,10 @@
             {
                 config.options.scales.yAxes[0].gridLines = defaultConfig.scales.yAxes[0].gridLines;
             }
+            if(!Helper.isExist(config.options.ratio))
+            {
+                config.options.ratio = defaultConfig.options.ratio;
+            }
             computedOptions = Object.assign(computedOptions, config.options );
             
             return config;
@@ -153,7 +156,7 @@
         {
             let obj = {};
             let diagonal = 0;
-            console.log(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
+//            console.log(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
             let x = computedOptions.ratio.x;
             let y = computedOptions.ratio.y;
             console.log(`RATIO = ${x}:${y}`);
@@ -164,13 +167,11 @@
             diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
 
 
-            console.log(`w=${w} h=${h}`);
-            console.log(`x=${x} y=${y}`);
             console.log(`diagonal=${diagonal}`);
 
             obj.width = diagonal * x / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
             obj.height = diagonal * y / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
-            console.log(`ratio width=${obj.width},height=${obj.height}`);
+        //    console.log(`ratio width=${obj.width},height=${obj.height}`);
             return obj;
         },
         initCanvasSize(ctx)
@@ -180,8 +181,8 @@
             ctx.canvas.height = obj.height;
             //ctx.canvas.width = window.innerWidth,
             //ctx.canvas.height = (ctx.canvas.width / RATIO_WIDTH) * RATIO_HEIGHT;  // aspect ratio 21:9
-            console.log(`width : ${ctx.canvas.width}`);
-            console.log(`height : ${ctx.canvas.height}`);
+            //console.log(`width : ${ctx.canvas.width}`);
+            //console.log(`height : ${ctx.canvas.height}`);
         },
         computeSize(ctx)
         {
@@ -214,14 +215,14 @@
             var niceMin;
             var niceMax;
 
-            calculate();
+            scaleCalculator();
             return {
                 tickSpacing: tickSpacing,
                 niceMinimum: niceMin,
                 niceMaximum: niceMax
             };
 
-            function calculate() {
+            function scaleCalculator() {
                 range = niceNum(maxPoint - minPoint, false);
                 tickSpacing = niceNum(range / (maxTicks - 1), true);
                 niceMin =
@@ -601,7 +602,6 @@
         };
 
         let me = this;
-        //me.resizeEvent = new Event('resizeEvt');
         me.ctx = Helper.contextValidator(ctx, config);
         if(me.ctx < 0)
             return -1;
@@ -621,8 +621,8 @@
             },
             changeRatio : function()
             {
-               // TODO
-
+                me.baseDrawing();
+                return me.config.options.ratio;
             },
             getCurrentOpt : function(){
                 return computedOptions;
@@ -652,26 +652,29 @@
         Helper.computeSize(this.ctx);
         Draw.baseCanvas(this.config);
     }
-
    
     JChart.prototype.bindResizeEvent = function()
     {
-        console.warn('responsive mode on');
-        document.addEventListener('resizeEvt', this.resizingCanvas.bind(this));
+        console.warn('responsive mode : on');
+        var me = this;
 
         window.addEventListener('resize',function(win){
             let canvasSize = {};
             canvasSize.inWidth = win.target.innerWidth;
             canvasSize.inHeight = win.target.innerHeight;
-            document.dispatchEvent(new CustomEvent('resizeEvt', {detail:canvasSize}));
-        },false);
+            this.resizingCanvas(canvasSize);
+        }.bind(me));
     }
 
     JChart.prototype.resizingCanvas = function(size)
     {
         let me = this;
-        me.canvas.width = size.detail.inWidth;
-        me.canvas.height = (me.canvas.width / 21) * 9;  // 가로를 21:9 비율로 채우기
+        
+        me.canvas.width = size.inWidth * 0.75;
+        me.canvas.height = (me.canvas.width / computedOptions.ratio.x) * computedOptions.ratio.y;  // 가로를 21:9 비율로 채우기
+        console.log(`resize width=${me.canvas.width} height=${me.canvas.height}`);
+
+            //let y = computedOptions.ratio.y;
         Helper.computeSize(me.ctx);
         Draw.baseCanvas(this.config);
     } 

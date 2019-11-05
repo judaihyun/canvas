@@ -82,3 +82,12 @@ procedure :
 6. resizeForResponsive()
 -> 6-1. computeSize(ctx);
 -> 6-2. baseCanvas(config);
+
+
+
+제공 메서드
+
+JChart.update() : config.data를 새로 읽어들여 새로 그린다.
+JChart.getCurrentOpt() : return Object, 현재 chart에 적용된 options 값을 반환.
+
+

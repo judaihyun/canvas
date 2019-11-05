@@ -4,25 +4,19 @@ let config =
     type:'line',
     data:{
         labels: [
-            'January','Feb','Mar','Apr','May'
+            'Jan','Feb','Mar','Apr','May'
         ],
         datasets: [{
             label: 'firstLable',
             data: [
                 -50,1.5,-30
             ]
-        }/*,{
+            }/*,{
             label: 'secondLable',
-            data: [
-                2,3,50
-            ]
-        }*/]
+            data:[-20]
+            }*/ ]
     },
     options:{
-        ratio:{
-            x: 21,
-            y: 9
-        },
         responsive: true,
         layout: {
             padding: {
@@ -86,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function()
         document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
         document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
         document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
+        //document.getElementsByClassName('currentRatio').innerHTML = value.options.ratio.x;
     };
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
@@ -97,12 +92,12 @@ document.addEventListener('DOMContentLoaded', function()
     },false);
 
     document.getElementById('changeRatio').addEventListener('click',()=>{
-        let ratioX = document.getElementById('ratioX').value;
-        let ratioY = document.getElementById('ratioY');
-        console.log(ratioX);
+        let ratioX = document.getElementById('ratioX').value || 21;
+        let ratioY = document.getElementById('ratioY').value || 9;
         config.options.ratio.x = ratioX;
         config.options.ratio.y = ratioY;
         myChart.changeRatio();
+        document.getElementsByClassName('currentRatio')[0].innerHTML = ratioX + ' : ' + ratioY;
     },false);
 
 
