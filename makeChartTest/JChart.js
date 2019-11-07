@@ -156,22 +156,29 @@
         {
             let obj = {};
             let diagonal = 0;
-//            console.log(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
+            debugConsole(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
             let x = computedOptions.ratio.x;
             let y = computedOptions.ratio.y;
-            console.log(`RATIO = ${x}:${y}`);
+            debugConsole(`RATIO = ${x}:${y}`);
+            var bodyEl = ctx.canvas.parentNode;
 
+            console.dir('clientWidth : ' + bodyEl.clientWidth); //parent Width
+            console.dir('clientHeight : ' + bodyEl.clientHeight); //parent Width
+            let w = bodyEl.clientWidth;
+            let h = bodyEl.clientHeight;
+            /*
             let w = ctx.canvas.width;
             let h = ctx.canvas.height;
+            */
 
             diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
 
 
-            console.log(`diagonal=${diagonal}`);
+            debugConsole(`diagonal=${diagonal}`);
 
             obj.width = diagonal * x / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
             obj.height = diagonal * y / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
-        //    console.log(`ratio width=${obj.width},height=${obj.height}`);
+            console.log(`ratio width=${obj.width},height=${obj.height}`);
             return obj;
         },
         initCanvasSize(ctx)
@@ -648,6 +655,10 @@
 
     JChart.prototype.baseDrawing = function()
     {   
+        var bodyEl = this.canvas.parentNode;
+
+        console.dir('clientWidth : ' + bodyEl.clientWidth); //parent Width
+        console.dir('clientHeight : ' + bodyEl.clientHeight); //parent Width
         Helper.initCanvasSize(this.ctx);
         Helper.computeSize(this.ctx);
         Draw.baseCanvas(this.config);
@@ -669,15 +680,21 @@
     JChart.prototype.resizingCanvas = function(size)
     {
         let me = this;
-        
-        me.canvas.width = size.inWidth * 0.75;
-        me.canvas.height = (me.canvas.width / computedOptions.ratio.x) * computedOptions.ratio.y;  // 가로를 21:9 비율로 채우기
+        let obj = Helper.ratioCalculator(me.ctx);
+        me.canvas.width = obj.width;
+        me.canvas.height = obj.height;
+
+ 
+
+        //me.canvas.width = size.inWidth;// * 0.75;
+        //me.canvas.height = (me.canvas.width / computedOptions.ratio.x) * computedOptions.ratio.y;  // 가로를 21:9 비율로 채우기
         console.log(`resize width=${me.canvas.width} height=${me.canvas.height}`);
 
             //let y = computedOptions.ratio.y;
         Helper.computeSize(me.ctx);
         Draw.baseCanvas(this.config);
     } 
+
 
     window.JChart = JChart;
 

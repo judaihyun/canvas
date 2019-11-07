@@ -45,6 +45,7 @@ let config =
     }
 };
 
+
 document.addEventListener('DOMContentLoaded', function()
 {
 
@@ -99,6 +100,19 @@ document.addEventListener('DOMContentLoaded', function()
         myChart.changeRatio();
         document.getElementsByClassName('currentRatio')[0].innerHTML = ratioX + ' : ' + ratioY;
     },false);
+
+
+    document.getElementById('changeCanvas').addEventListener('click',()=>{
+        let w = document.getElementById('width').value || 600;
+        let h = document.getElementById('height').value || 350;
+        canvas.width = w;
+        canvas.height = h;
+        myChart.update();
+        document.getElementsByClassName('currentCanvas')[0].innerHTML = w+ ' : ' + h;
+    },false);
+
+
+
 
 
 },false);

@@ -19,11 +19,31 @@
                 color: red;
                 background-color:yellow;
             }
-            .ratioBox{
-                width:2rem;
-            }
             .currentRatio{
                 font-weight: bold;
+            }
+            .chartSize{
+                padding-top:1rem;
+            }
+            button{
+                width: 10rem; 
+                height: 2rem;
+            }
+            .ratioInput, .canvasInput{
+                width: 3rem;
+                height: 1.5rem;
+            }
+            .ratioSize{
+                float:left;
+                border:solid red 1px;
+                min-width:30vw;
+                margin-bottom: 1rem;
+            }
+            .canvasSize{
+                float:left;
+                border:solid green 1px;
+                min-width:30vw;
+                margin-bottom: 1rem;
             }
             p{
                 display:inline;
@@ -33,30 +53,43 @@
         <script src='randomGenerator.js'></script>
         <script src='JChart.js'></script>
         <script src='init.js'></script>
+        </script>
     </head>
     <body>
-        <canvas id="myChart" width="600" height="350">
+        <div class='canvasContainer' style='width:70%;'>
+            <canvas id="myChart">
             Canvas Not supported
-        </canvas>
-        <div class='info'>
-            <div id='chartWidth'></div>
-            <div id='chartHeight'></div>
-            <div id='leftPadding'></div>
-            <div id='rightPadding'></div>
-            <div id='bottomPadding'></div>
-            <div id='topPadding'></div>
+            </canvas>
+        </div>
+        <div class='chartSize'>
+            <span id='chartWidth'></span>
+            <span id='chartHeight'></span>
+            <span id='leftPadding'></span>
+            <span id='rightPadding'></span>
+            <span id='bottomPadding'></span>
+            <span id='topPadding'></span>
+            <button>설명보기</button>
         </div>
         <div id='pos'></div><br>
-        <div>
+        <div class='controlBox'>
+            <div class='ratioSize'>
+                <span style='display:block;'>현재 종횡비 : <p class='currentRatio'>21 : 9</p></span><br>
+                <label for='changeRatio'>종횡비 변환</label>
+                    <input type='text' class='ratioInput' id='ratioX'></input>
+                    <input type='text' class='ratioInput' id='ratioY'></input>
+                <button type='button' id='changeRatio'>changeRatio</button>
+            </div>
+            <div class='canvasSize'>
+                <span style='display:block;'>현재 캔버스(width/height) <p class='currentCanvas'>600 : 350</p></span><br>
+                <label for='changeCanvas'>캔버스 크기</label>
+                    <input type='text' class='canvasInput' id='width'></input>
+                    <input type='text' class='canvasInput' id='height'></input>
+                <button type='button' id='changeCanvas'>changeCanvas</button>
+            </div>
+        </div>
+        <div style='clear:both;'>
             <label for='chartUpdate'>차트 갱신</label>
             <button type='button' id='chartUpdate'>update</button>
         </div><br>
-        <div>
-            <span style='display:block;'>현재 종횡비 : <p class='currentRatio'>21 : 9</p></span><br>
-            <label for='changeRatio'>종횡비 변환</label>
-                <input type='text' class='ratioBox' id='ratioX'></input>
-                <input type='text' class='ratioBox' id='ratioY'></input>
-            <button type='button' id='changeRatio'>changeRatio</button>
-        </div>
     </body>
 </html>
