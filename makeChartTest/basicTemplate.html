@@ -3,12 +3,14 @@
     <head>
         <link rel='stylesheet' href='../reset.css' type='text/css'/>
         <style>
-            #canvas{
-                margin:10px;
-                padding:10px;
-                background:#ffffff;
+            canvas{
+                background-color:red;
                 border: thin inset #aaaaaa;
                 cursor: crosshair;
+            }
+            .canvasContainer{
+                text-align: center;
+                background-color:black;
             }
             #pos{
                 position: absolute;
@@ -39,15 +41,10 @@
                 min-width:30vw;
                 margin-bottom: 1rem;
             }
-            .canvasSize{
-                float:left;
-                border:solid green 1px;
-                min-width:30vw;
-                margin-bottom: 1rem;
-            }
             p{
                 display:inline;
             }
+     
         </style>
         <script src='canvasGuideForDevelop.js'></script>
         <script src='randomGenerator.js'></script>
@@ -74,17 +71,10 @@
         <div class='controlBox'>
             <div class='ratioSize'>
                 <span style='display:block;'>현재 종횡비 : <p class='currentRatio'>21 : 9</p></span><br>
-                <label for='changeRatio'>종횡비 변환</label>
                     <input type='text' class='ratioInput' id='ratioX'></input>
                     <input type='text' class='ratioInput' id='ratioY'></input>
+                <label for='changeRatio'>종횡비 변환</label>
                 <button type='button' id='changeRatio'>changeRatio</button>
-            </div>
-            <div class='canvasSize'>
-                <span style='display:block;'>현재 캔버스(width/height) <p class='currentCanvas'>600 : 350</p></span><br>
-                <label for='changeCanvas'>캔버스 크기</label>
-                    <input type='text' class='canvasInput' id='width'></input>
-                    <input type='text' class='canvasInput' id='height'></input>
-                <button type='button' id='changeCanvas'>changeCanvas</button>
             </div>
         </div>
         <div style='clear:both;'>

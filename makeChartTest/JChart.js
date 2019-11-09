@@ -40,11 +40,11 @@
     const defaultConfig = 
     {
         options:{
-            ratio:{
+            responsive: true,
+            ratio: {
                 x: 21,
                 y: 9
             },
-            responsive: true,
             layout: {
                 padding: {
                     top: 40.5,
@@ -156,23 +156,22 @@
         {
             let obj = {};
             let diagonal = 0;
-            debugConsole(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
+            let parentNode = ctx.canvas.parentNode;
+            let parentWidth = parentNode.clientWidth;
+            let parentHeight = parentNode.clientHeight;
+
+            console.log(`parent width=${parentNode.clientWidth} height=${parentNode.clientHeight}`);
+            console.log(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
+
             let x = computedOptions.ratio.x;
             let y = computedOptions.ratio.y;
-            debugConsole(`RATIO = ${x}:${y}`);
-            var bodyEl = ctx.canvas.parentNode;
 
-            console.dir('clientWidth : ' + bodyEl.clientWidth); //parent Width
-            console.dir('clientHeight : ' + bodyEl.clientHeight); //parent Width
-            let w = bodyEl.clientWidth;
-            let h = bodyEl.clientHeight;
-            /*
-            let w = ctx.canvas.width;
-            let h = ctx.canvas.height;
-            */
+            console.log(`RATIO = ${x}:${y}`);
+
+            let w = parentNode.clientWidth;
+            let h = parentNode.clientHeight;
 
             diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
-
 
             debugConsole(`diagonal=${diagonal}`);
 
@@ -268,6 +267,11 @@
                 return niceFraction * Math.pow(10, exponent);
             }
 
+        },
+        getGcd(width, height)
+        {
+            if(height == 0) return width;
+            return this.getGcd(height, width % height);
         },
         drawingRect(ctx) // for debug only
         {
@@ -655,10 +659,10 @@
 
     JChart.prototype.baseDrawing = function()
     {   
-        var bodyEl = this.canvas.parentNode;
+        let parentNode = this.canvas.parentNode;
 
-        console.dir('clientWidth : ' + bodyEl.clientWidth); //parent Width
-        console.dir('clientHeight : ' + bodyEl.clientHeight); //parent Width
+        console.dir('parentWidth : ' + parentNode.clientWidth); //parent Width
+        console.dir('parentHeight : ' + parentNode.clientHeight); //parent Width
         Helper.initCanvasSize(this.ctx);
         Helper.computeSize(this.ctx);
         Draw.baseCanvas(this.config);
@@ -670,10 +674,12 @@
         var me = this;
 
         window.addEventListener('resize',function(win){
+            /*
             let canvasSize = {};
             canvasSize.inWidth = win.target.innerWidth;
             canvasSize.inHeight = win.target.innerHeight;
-            this.resizingCanvas(canvasSize);
+            */
+            this.resizingCanvas();
         }.bind(me));
     }
 
@@ -684,13 +690,11 @@
         me.canvas.width = obj.width;
         me.canvas.height = obj.height;
 
- 
 
         //me.canvas.width = size.inWidth;// * 0.75;
         //me.canvas.height = (me.canvas.width / computedOptions.ratio.x) * computedOptions.ratio.y;  // 가로를 21:9 비율로 채우기
         console.log(`resize width=${me.canvas.width} height=${me.canvas.height}`);
 
-            //let y = computedOptions.ratio.y;
         Helper.computeSize(me.ctx);
         Draw.baseCanvas(this.config);
     } 
