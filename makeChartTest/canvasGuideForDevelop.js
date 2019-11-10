@@ -67,7 +67,6 @@ Guide = function(ctx, canvas)
         saveDrawingSurface();
         if(e.ctrlKey)
         {
-            console.log('ctrl');
             mousePos.x = loc.x;
             mousePos.y = loc.y;
             dragging = true;
@@ -76,7 +75,9 @@ Guide = function(ctx, canvas)
         drawVerticalLine(loc.x);
         drawHorizontalLine(loc.y);
         ctx.restore();
-        me.posEl.innerText = loc.x + ',' +loc.y;
+        console.log(loc.x);
+        console.log(loc.y);
+        me.posEl.innerText = '[' + loc.x + '] , [' + loc.y + ']';
 
     },false);
 
