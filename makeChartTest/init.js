@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function()
    
     
     let myChart = new JChart(ctx, config);
+    myChart.setLog(false);
     let value = myChart.getCurrentOpt();
 
     updateEl();
@@ -81,12 +82,10 @@ document.addEventListener('DOMContentLoaded', function()
         document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
         document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
         document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
-        //document.getElementsByClassName('currentRatio').innerHTML = value.options.ratio.x;
     };
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
         var dummy = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(), randomScalingFactor()];
-        //config.options.scales.xAxes[0].scaleLabel.labelString = 'test';
         console.warn('dummy : ' + dummy);
         config.data.datasets[0].data = dummy;
         myChart.update();
@@ -97,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function()
         let ratioY = document.getElementById('ratioY').value || 9;
         config.options.ratio.x = ratioX;
         config.options.ratio.y = ratioY;
+        
         myChart.changeRatio();
         document.getElementsByClassName('currentRatio')[0].innerHTML = ratioX + ' : ' + ratioY;
     },false);

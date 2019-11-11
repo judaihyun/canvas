@@ -19,10 +19,10 @@
 			// |----------------------------------------------------|
 
 	C0 : chartArea
-	B1 : x rangeAxis area
-	B2 : legendLable(bottomLable)
-	L1 : legendLable(leftLable);
-	L2 : y rangeAxis area(yTickLable)
+	B1 : x축 tick 영역
+	B2 : x축 legendLable(bottomLable)
+	L1 : y축 legendLable(leftLable);
+	L2 : y축 tick 영역 (yTickLable)
 	T1 : title
 	T2 : subtitle
 
@@ -39,11 +39,19 @@ data:
 	labels: ['jan','feb'],
 	datasets: [
 	{
+		label: 'label이름',
 		data:[0,1],
 	}]	
 },
 options:{
-	~~~
+	responsive: boolean,
+	layout:{
+		padding:{
+			top:1, right:4~~~
+		}
+	}
+},scale{
+	
 }
 
 

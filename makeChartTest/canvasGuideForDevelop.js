@@ -75,9 +75,8 @@ Guide = function(ctx, canvas)
         drawVerticalLine(loc.x);
         drawHorizontalLine(loc.y);
         ctx.restore();
-        console.log(loc.x);
-        console.log(loc.y);
         me.posEl.innerText = '[' + loc.x + '] , [' + loc.y + ']';
+        //me.posEl.innerText = '[' + e.clientX+ '] , [' + e.clientY + ']';
 
     },false);
 
