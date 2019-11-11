@@ -39,6 +39,14 @@
     /* JChart 생성시 config가 비어있을 경우 이 defaultConfig 값을 사용 */
     const defaultConfig = 
     {
+        data:{
+            labels: [''
+            ],
+            datasets: [{
+                label: '',
+                data: []
+                }]
+        },
         options:{
             responsive: true,
             ratio: {
@@ -130,12 +138,19 @@
         },
         initConfig(config)
         {
-
+            /* 보완이 매우 필요함. */
             if(!Helper.isExist(config.options))
             {
                 config.options = defaultConfig.options;
             }
-
+            if(!Helper.isExist(config.data))
+            {
+                config.data = defaultConfig.data;
+            }
+            if(!Helper.isExist(config.options.scales))
+            {
+                config.options.scales = defaultConfig.scales;
+            }
             if(!Helper.isExist(config.options.scales.xAxes[0].gridLines))
             {
                 config.options.scales.xAxes[0].gridLines = defaultConfig.scales.xAxes[0].gridLines;
