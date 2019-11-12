@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', function()
     let guide = new Guide(ctx, canvas);
     guide.setDrawWidthEl(drawWidth);
     guide.setPosEl(posDiv);
-   
-    
+
+
     let myChart = new JChart(ctx, config);
     myChart.setLog(false);
     let value = myChart.getCurrentOpt();
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function()
         value = myChart.getCurrentOpt();
         updateEl();
     },false);
-  
+ 
     function updateEl(){
         document.getElementById('chartWidth').innerHTML = 'chartWidth : ' + value.layout.chartWidth;
         document.getElementById('chartHeight').innerHTML = 'chartHeight : ' + value.layout.chartHeight;

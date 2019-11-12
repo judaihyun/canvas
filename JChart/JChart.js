@@ -1,4 +1,6 @@
 
+    const CODE_VERSION = '0.1';
+
 (function(global, factory)
 {
     // UMD,  if module object exists, then CommonJS
@@ -647,7 +649,6 @@
             },
             setLog : function(value)
             {
-                console.log(value);
                 if(Helper.isExist(value))
                 {
                     DEBUG_MODE = value;
