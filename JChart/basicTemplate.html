@@ -4,13 +4,11 @@
         <link rel='stylesheet' href='../reset.css' type='text/css'/>
         <style>
             canvas{
-                background-color:#aaaaaa;
-                border: thin inset #aaaaaa;
+                border: solid 1px gray;
                 cursor: crosshair;
             }
             .canvasContainer{
                 text-align: center;
-                background-color:black;
             }
             #pos{
                 position: absolute;
@@ -25,6 +23,8 @@
                 font-weight: bold;
             }
             .chartSize{
+                display: inline-block;
+                border:solid red 1px;
                 padding-top:1rem;
             }
             button{
@@ -53,17 +53,26 @@
         </script>
     </head>
     <body>
-        <div class='canvasContainer' style='width:70%;'>
+        <div class='canvasContainer' style='width:60%;'>
             <canvas id="myChart">Canvas Not supported</canvas>
         </div>
+        <div>
+            <select id='areaShow'>
+                <option value='1'>canvasArea</option>
+                <option value='2'>chartArea</option>
+                <option value='3'>bottomLabel</option>
+                <option value='4'>yTickLabel</option>
+            </select>
+        <button type='button' id='showBtn'>show</button>
+        <button type='button' id='apiDoc'>설명보기</button>
+        </div>
         <div class='chartSize'>
-            <span id='chartWidth'></span>
-            <span id='chartHeight'></span>
-            <span id='leftPadding'></span>
-            <span id='rightPadding'></span>
-            <span id='bottomPadding'></span>
-            <span id='topPadding'></span>
-            <button>설명보기</button>
+            <div id='chartWidth'></div>
+            <div id='chartHeight'></div>
+            <div id='leftPadding'></div>
+            <div id='rightPadding'></div>
+            <div id='bottomPadding'></div>
+            <div id='topPadding'></div>
         </div>
         <div id='pos'></div><br>
         <div class='controlBox'>

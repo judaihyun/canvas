@@ -101,6 +101,27 @@ document.addEventListener('DOMContentLoaded', function()
         document.getElementsByClassName('currentRatio')[0].innerHTML = ratioX + ' : ' + ratioY;
     },false);
 
+    document.getElementById('showBtn').addEventListener('click',function(){
+        let selected = document.getElementById('areaShow').selectedIndex;
+        switch(selected)
+        {
+            case 0:
+                myChart.areaShow().canvasArea();
+                break;
+            case 1:
+                myChart.areaShow().chartArea();
+                break;
+            case 2:
+                myChart.areaShow().bottomLabel();
+                break;
+            case 3:
+                myChart.areaShow().yTickLabel();
+                break;
+
+        }
+        
+    },false)
+
 
 
 

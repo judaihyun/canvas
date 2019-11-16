@@ -1,5 +1,5 @@
 
-    const CODE_VERSION = '0.3';
+    const CODE_VERSION = '0.5';
 
 (function(global, factory)
 {
@@ -281,62 +281,46 @@
             }
 
         },
-        getGcd(width, height)  // for test
+        drawingRect(ctx) // for debug
         {
-            if(height == 0) return width;
-            return this.getGcd(height, width % height);
-        },
-        drawingRect(ctx) // for debug only
-        {
-          
-            (function canvasArea(){
-                ctx.save();
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = 5;
-                ctx.strokeRect(0,
-                            0,
-                            ctx.canvas.width,
-                            ctx.canvas.height);
-                ctx.restore();
-            })();
-            
-            
-            (function chartArea(){
-
-                ctx.save();
-                ctx.strokeStyle = 'red';
-                ctx.lineWidth = 0.5;
-                ctx.strokeRect(computedOptions.layout.padding.left,
+            return{
+                canvasArea : ()=>{
+                    ctx.save();
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 5;
+                    ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    ctx.restore();
+                },
+                chartArea : () => {
+                    ctx.save();
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 0.5;
+                    ctx.strokeRect(computedOptions.layout.padding.left,
                             computedOptions.layout.padding.top,
                             computedOptions.layout.chartWidth,
                             computedOptions.layout.chartHeight);
-                ctx.restore();
-            })();
-          
-            /*
-            (function yTickLabel(){
-                ctx.save();
-                ctx.strokeStyle = 'green';
-                ctx.lineWidth = 0.5;
-                ctx.strokeRect(30,
-                            30,
-                            30,
-                            computedOptions.layout.chartHeight);
-                ctx.restore();
-            })();
-
-            (function bottomLable(){
-                ctx.save();
-                ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(0,
-                            computedOptions.layout.padding.top + computedOptions.layout.chartHeight,
-                            computedOptions.layout.bottomLable.width,
-                            computedOptions.layout.bottomLable.height);
-                ctx.restore();
-            })();
-
-            */
+                    ctx.restore();
+                },
+                yTickLabel : () => {
+                    ctx.save();
+                    ctx.strokeStyle = 'green';
+                    ctx.lineWidth = 0.5;
+                    ctx.strokeRect(30, 30, 30, computedOptions.layout.chartHeight);
+                    ctx.restore();
+                },
+                bottomLabel : () => {
+                    ctx.save();
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(0,
+                                computedOptions.layout.padding.top + computedOptions.layout.chartHeight,
+                                computedOptions.layout.bottomLable.width,
+                                computedOptions.layout.bottomLable.height);
+                    ctx.restore();
+                }
+            }
+            
+         
         }
     };
 
@@ -493,7 +477,6 @@
 
             this.xGridWithLabel(maxValue, minValue);
 
-            Helper.drawingRect(ctx); // for debug only
 
         },
         axisTitles(scales, axesType)
@@ -669,6 +652,10 @@
                 {
                     DEBUG_MODE = value;
                 }
+            },
+            areaShow : function()
+            {
+                return Helper.drawingRect(ctx);
             }
         }
     };
