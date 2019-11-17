@@ -28,46 +28,6 @@
 
 
 
-- config 
-type : object
-
-configuration 형식 
-
-type: 'line',  -> 일단 line만
-data: 
-{
-	labels: ['jan','feb'],
-	datasets: [
-	{
-		label: 'label이름',
-		data:[0,1],
-	}]	
-},
-options:{
-	responsive: boolean,
-	layout:{
-		padding:{
-			top:1, right:4~~~
-		}
-	}
-},scale{
-	
-}
-
-
-data : object
-: only one
-
-datasets : array like object
-: dataset[n] 을 갖음.
-
-datasets.data : array
-: dataset[n].data 
-
-options : object
-:
-
-
 procedure : 
 
 1. contextValidator(ctx, config) : 

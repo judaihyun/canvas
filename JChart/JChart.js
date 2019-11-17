@@ -184,8 +184,7 @@
                 let parentWidth = parentNode.clientWidth;
                 let parentHeight = parentNode.clientHeight;
     
-                //console.log(`parent width=${parentWidth} height=${parentHeight}`);
-                //console.log(`original width=${ctx.canvas.width} height=${ctx.canvas.height}`);
+                console.log(`parent width=${parentWidth} height=${parentHeight}`);
     
                 let x = computedOptions.ratio.x;
                 let y = computedOptions.ratio.y;
@@ -199,9 +198,9 @@
     
                 debugConsole(`diagonal=${diagonal}`);
     
-                obj.width = diagonal * x / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
-                obj.height = diagonal * y / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
-                debugConsole(`ratio width=${obj.width},height=${obj.height}`);
+                obj.width = Math.floor(diagonal * x / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2)));
+                obj.height = Math.floor(diagonal * y / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2)));
+                console.log(`ratio width=${obj.width},height=${obj.height}`);
                 ctx.canvas.width = obj.width;
                 ctx.canvas.height = obj.height;
                 return obj;
@@ -624,7 +623,6 @@
             me.ctx = Helper.contextValidator(ctx, config);
             if(me.ctx < 0)  return -1;
     
-            me.canvas = me.ctx.canvas;
             me.config = Helper.initConfig(config);
     
             me.draw = new Draw();
@@ -676,7 +674,6 @@
         JChart.prototype.baseDrawing = function()
         {   
             let me = this;
-            let parentNode = me.canvas.parentNode;
     
             Helper.ratioCalculator(me.ctx);
     
@@ -699,7 +696,7 @@
             let me = this;
             Helper.ratioCalculator(me.ctx);
     
-            debugConsole(`resize width=${me.canvas.width} height=${me.canvas.height}`);
+            debugConsole(`resize width=${me.ctx.canvas.width} height=${me.ctx.canvas.height}`);
     
             Helper.computeSize(me.ctx);
             me.draw.baseCanvas(this.config);

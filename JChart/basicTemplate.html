@@ -1,72 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel='stylesheet' href='css/reset.css' type='text/css'/>
-        <link rel='stylesheet' href='css/normalize.css' type='text/css'/>
-        <style>
-            canvas{
-                border: solid 1px gray;
-                cursor: crosshair;
-            }
-            .canvasContainer{
-                text-align: center;
-            }
-            #pos{
-                position: absolute;
-                font-size: 15px;
-                font-weight: bold;
-                top: 5px;
-                left: 5px;
-                color: red;
-                background-color:yellow;
-            }
-            .currentRatio{
-                font-weight: bold;
-            }
-            .chartSize{
-                float:left;
-                display: inline-block;
-                border:solid red 1px;
-            }
-            button{
-                width: 10rem; 
-                height: 2rem;
-            }
-            .ratioInput, .canvasInput{
-                width: 3rem;
-                height: 1.5rem;
-            }
-            .ratioSize{
-                display: inline-block;
-                margin-bottom: 1rem;
-            }
-            p{
-                display:inline;
-            }
-            .infoBox{
-                width:60%;
-                display: inline-block;
-                border:solid red 1px;
-            }
-            .areaBox{
-                display: inline-block;
-            }
-            .right{
-                text-align:right;
-            }
-     
-        </style>
-        <script src='js/JChart/canvasGuideForDevelop.js'></script>
-        <script src='js/JChart/randomGenerator.js'></script>
-        <script src='js/JChart/JChart.js'></script>
-        <script src='js/JChart/init.js'></script>
+        <link rel='stylesheet' href='../css/reset.css' type='text/css'/>
+        <link rel='stylesheet' href='../css/normalize.css' type='text/css'/>
+        <link rel='stylesheet' href='../css/basicTemplate.css' type='text/css'/>
+        <script src='canvasGuideForDevelop.js'></script>
+        <script src='randomGenerator.js'></script>
+        <script src='JChart.js'></script>
+        <script src='init.js'></script>
         </script>
     </head>
     <body>
-        <div class='canvasContainer' style='width:60%;'>
+        <div class='canvasContainer' style='width:70%'>
             <canvas id="myChart">Canvas Not supported</canvas>
         </div>
-        
+        <div id='drawingWidth'></div>
         <div class='infoBox'>
             <div class='chartSize'>
                 <div>현재 설정 값</div>
@@ -81,7 +29,7 @@
             </div>
             <div class='right'>
             <div class='areaBox'>
-                <label for='areaShow'>영역 표시</label>
+                <label for='areaShow'>영역표시</label>
                 <select id='areaShow'>
                     <option value='1'>canvasArea</option>
                     <option value='2'>chartArea</option>
@@ -105,9 +53,4 @@
 
         <div id='pos'></div>
     </body>
-<script>
-document.addEventListener('load',function(){
-    window.open('http://index.html','_blank');
-},false);
-</script>
 </html>
