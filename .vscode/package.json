@@ -1,5 +1,0 @@
-{
-    "yarn.runInTerminal": false,
-    "yarn.dontHideOutputOnSuccess": false,
-    "yarn.packageJson": ".vscode/package.json"
-}
