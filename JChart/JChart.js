@@ -64,7 +64,30 @@
                         left: 65.5
                     }
                 },
+                scales:{
+                    yAxes:[{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                        },
+                        gridLines:{
+                            color: globalDefaults.gridlineColor,
+                            lineWidth: globalDefaults.gridLineWidth
+                        }
+                    }],
+                    xAxes:[{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                        },
+                        gridLines:{
+                            color: globalDefaults.gridlineColor,
+                            lineWidth: globalDefaults.gridLineWidth
+                        }
+                    }]
+                }
             },
+            /*  incomplete
             elements:{},
             events: [
                 'mousemove',
@@ -73,45 +96,21 @@
                 'touchstart',
                 'touchmove'
             ],
-            hover: { /* incompleted */
+            hover: { 
                 onHover: null,
                 mode: 'nearest',
                 intersect: true,
                 animationDuration: 400
             },
-            scales:{
-                yAxes:[{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                    },
-                    gridLines:{
-                        color: globalDefaults.gridlineColor,
-                        lineWidth: globalDefaults.gridLineWidth
-                    }
-                }],
-                xAxes:[{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                    },
-                    gridLines:{
-                        color: globalDefaults.gridlineColor,
-                        lineWidth: globalDefaults.gridLineWidth
-                    }
-                }]
-            },
+            
             onClick: null,
             maintainAspectRatio: true,
-            responsive: false,
             responsiveAnimationDuration: 0
+            */
         };
 
         /* 실제 반영된 options*/
         let computedOptions = {
-            layout : {
-                bottomLable : { }
-            }
         };
 
 
@@ -142,6 +141,7 @@
             initConfig(config)
             {
                 /* 보완이 매우 필요함. */
+            
                 if(!Helper.isExist(config.options))
                 {
                     config.options = defaultConfig.options;
@@ -156,11 +156,11 @@
                 }
                 if(!Helper.isExist(config.options.scales.xAxes[0].gridLines))
                 {
-                    config.options.scales.xAxes[0].gridLines = defaultConfig.scales.xAxes[0].gridLines;
+                    config.options.scales.xAxes[0].gridLines = defaultConfig.options.scales.xAxes[0].gridLines;
                 }
                 if(!Helper.isExist(config.options.scales.yAxes[0].gridLines))
                 {
-                    config.options.scales.yAxes[0].gridLines = defaultConfig.scales.yAxes[0].gridLines;
+                    config.options.scales.yAxes[0].gridLines = defaultConfig.options.scales.yAxes[0].gridLines;
                 }
                 if(!Helper.isExist(config.options.ratio))
                 {
@@ -170,7 +170,8 @@
                 {
                     config.options.layout = defaultConfig.options.layout;
                 }
-                computedOptions = Object.assign(computedOptions, config.options );
+                
+                Object.assign(computedOptions, config.options );
 
                 return config;
             },
