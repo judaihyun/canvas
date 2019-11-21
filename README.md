@@ -6,6 +6,7 @@
 	파일 위치 : JChart/JChart.js
 </p>
 
+![3y](https://user-images.githubusercontent.com/10599877/69343281-a6c61c00-0cb0-11ea-90d2-4d17f33de3db.PNG)
 
 <section class="content">
 
