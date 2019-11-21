@@ -3,25 +3,23 @@
 
     (function(global, factory)
     {
+        'use strict';
         // UMD,  if module object exists, then CommonJS
         // if define object exists, then AMD
         // others global.useModuleName = factory()
         typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-        typeof define === 'function' && define.amd ? define(factory) : 
-        (factory.JChart = factory(global));
-    
+        typeof define === 'function' && define.amd ? define(factory) : (factory.JChart = factory(global));
     })(window, function(window){
-        'use strict';
-    
+
         let DEBUG_MODE = false;
-    
+
         function debugConsole(str)
         {
             if(typeof DEBUG_MODE !== 'undefined' && DEBUG_MODE)
                 console.log(str);
         }
-    
-        const globalDefaults = 
+
+        const globalDefaults =
         {
             defaultColor: 'rgba(0,0,0,0.1)',
             defaultFontColor: '#666',
@@ -38,11 +36,11 @@
             gridLineWidth: 0.5,
             curveLineColor: 'green',
             dataPointColor: 'blue'
-    
+
         };
-    
+
         /* JChart 생성시 config가 비어있을 경우 이 defaultConfig 값을 사용 */
-        const defaultConfig = 
+        const defaultConfig =
         {
             data:{
                 labels: [''
@@ -89,7 +87,7 @@
                     },
                     gridLines:{
                         color: globalDefaults.gridlineColor,
-                        lineWidth: globalDefaults.gridLineWidth 
+                        lineWidth: globalDefaults.gridLineWidth
                     }
                 }],
                 xAxes:[{
@@ -108,16 +106,16 @@
             responsive: false,
             responsiveAnimationDuration: 0
         };
-    
+
         /* 실제 반영된 options*/
         let computedOptions = {
             layout : {
                 bottomLable : { }
             }
         };
-    
-    
-        let Helper = 
+
+
+        let Helper =
         {
             isExist(value)
             {
@@ -129,13 +127,13 @@
                 if(!this.isExist(ctx)){
                     console.error('ctx undefined');
                     return -1;
-                } 
+                }
                 if(!this.isExist(config))
                 {
                     console.error('config undefined')
                     return -1;
-                } 
-    
+                }
+
                 // TODO validate config{}
                 for(let value in config)
                     debugConsole(value, config[value]);
@@ -173,7 +171,7 @@
                     config.options.layout = defaultConfig.options.layout;
                 }
                 computedOptions = Object.assign(computedOptions, config.options );
-                
+
                 return config;
             },
             ratioCalculator(ctx)
@@ -183,21 +181,21 @@
                 let parentNode = ctx.canvas.parentNode;
                 let parentWidth = parentNode.clientWidth;
                 let parentHeight = parentNode.clientHeight;
-    
+
                 console.log(`parent width=${parentWidth} height=${parentHeight}`);
-    
+
                 let x = computedOptions.ratio.x;
                 let y = computedOptions.ratio.y;
-    
+
                 debugConsole(`RATIO = ${x}:${y}`);
-    
+
                 let w = parentWidth;
                 let h = parentHeight;
-    
+
                 diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
-    
+
                 debugConsole(`diagonal=${diagonal}`);
-    
+
                 obj.width = Math.floor(diagonal * x / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2)));
                 obj.height = Math.floor(diagonal * y / Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2)));
                 console.log(`ratio width=${obj.width},height=${obj.height}`);
@@ -210,7 +208,7 @@
                 if(computedOptions.layout.padding)
                 {
                     computedOptions.layout.chartWidth = ctx.canvas.width -
-                                                    (computedOptions.layout.padding.left +  
+                                                    (computedOptions.layout.padding.left +
                                                     computedOptions.layout.padding.right);
                     computedOptions.layout.chartHeight = ctx.canvas.height -
                                                     (computedOptions.layout.padding.top +
@@ -235,14 +233,14 @@
                 var range;
                 var niceMin;
                 var niceMax;
-    
+
                 scaleCalculator();
                 return {
                     tickSpacing: tickSpacing,
                     niceMinimum: niceMin,
                     niceMaximum: niceMax
                 };
-    
+
                 function scaleCalculator() {
                     range = niceNum(maxPoint - minPoint, false);
                     tickSpacing = niceNum(range / (maxTicks - 1), true);
@@ -251,15 +249,15 @@
                     niceMax =
                         Math.ceil(maxPoint / tickSpacing) * tickSpacing;
                 }
-    
+
                 function niceNum(localRange, round) {
                     var exponent; /** exponent of localRange */
                     var fraction; /** fractional part of localRange */
                     var niceFraction; /** nice, rounded fraction */
-    
+
                     exponent = Math.floor(Math.log10(localRange));
                     fraction = localRange / Math.pow(10, exponent);
-    
+
                     if (round) {
                         if (fraction < 1.5)
                             niceFraction = 1;
@@ -281,7 +279,7 @@
                     }
                     return niceFraction * Math.pow(10, exponent);
                 }
-    
+
             },
             drawingRect(ctx) // for debug
             {
@@ -321,33 +319,33 @@
                         ctx.restore();
                     }
                 }
-                
-             
+
+
             }
         };
-    
+
         let dataPoints = [{
             xPoint : [],
             yPoint : []
         }];
-        
+
         let Draw = function(){
-    
+
         return{
             drawOptions()
             {
                 let ctx = this.getContext();
                 let width = ctx.canvas.width,
                     height = ctx.canvas.height;
-    
+
                 let leftPadding = computedOptions.layout.padding.left,
                     rightPadding = computedOptions.layout.padding.right,
                     topPadding = computedOptions.layout.padding.top,
                     bottomPadding = computedOptions.layout.padding.bottom,
                     chartWidth = computedOptions.layout.chartWidth,
                     chartHeight = computedOptions.layout.chartHeight;
-    
-              
+
+
                 return{
                     width, height, leftPadding,
                     rightPadding, topPadding, bottomPadding,
@@ -358,30 +356,30 @@
             {
                 let ctx = this.getContext();
                 let options = this.drawOptions();
-    
+
                 let labelLength = label.length || 1;
                 let stepx = options.chartWidth / (labelLength - 1);
                 let height = options.chartHeight + options.topPadding;
                 let width = options.chartWidth + options.leftPadding;
-                
-    
+
+
                 dataPoints[0].xPoint.splice(0);
                 ctx.save();
                 ctx.strokeStyle = computedOptions.scales.yAxes[0].gridLines.color;
                 ctx.lineWidth = computedOptions.scales.yAxes[0].gridLines.lineWidth;
-               
-                for(let x = options.leftPadding, yAxes = 0; 
+
+                for(let x = options.leftPadding, yAxes = 0;
                     x <= width; x += stepx, yAxes++)
                 {
                     ctx.beginPath();
                     ctx.moveTo(x, options.topPadding);
                     ctx.lineTo(x, height);
-    
+
                     dataPoints[0].xPoint.push(x);
                     this.bottomLabel(label[yAxes], x, options.chartHeight + options.bottomPadding);
                     ctx.stroke();
                 }
-    
+
                 ctx.restore();
             },
             bottomLabel(string, x, y)
@@ -394,7 +392,7 @@
             {
                 let ctx = this.getContext();
                 let options = this.drawOptions();
-    
+
                 let nice, niceMax, niceMin, tickStep, yTickNumber;
                 if(max !== min)
                 {
@@ -409,8 +407,8 @@
                     niceMin = max - (tickStep * 5);
                     yTickNumber = 11;
                 }
-                
-                
+
+
                 let stepy = Math.ceil((options.chartHeight) / yTickNumber);  
                 let yTick = niceMax;
                 let height = options.chartHeight + options.topPadding; 
@@ -428,12 +426,12 @@
                 debugConsole('stepy : ' + stepy);
                 debugConsole('tickStep : ' + tickStep);
                 debugConsole('-----------');
-    
+
                 ctx.save();
                 ctx.strokeStyle = computedOptions.scales.xAxes[0].gridLines.color;
                 let lineWidth = computedOptions.scales.xAxes[0].gridLines.lineWidth;
-    
-    
+
+
                 for(let y = options.topPadding;
                     y < height;
                     y += stepy)
@@ -462,24 +460,24 @@
             drawGrid(data)
             {
                 let ctx = this.getContext();
-    
+
                 let fontSize = globalDefaults.defaultFontSize,
                 fontStyle = fontSize + 'px ' + 'Arial';
                 ctx.font = fontStyle,
                 ctx.textAlign = 'center',
                 ctx.textBaseline = 'middle';
-    
+
                 let label = data.labels;
-                
+
                 this.yGridWithLabel(label);
-                
+
                 let dataValue = data.datasets[0].data;
                 let maxValue = Math.max.apply(null, dataValue);
                 let minValue = Math.min.apply(null, dataValue);
-    
+
                 this.xGridWithLabel(maxValue, minValue);
-    
-    
+
+
             },
             axisTitles(scales, axesType)
             {
@@ -489,16 +487,16 @@
                     height,
                 fontSize = globalDefaults.defaultFontSize,
                 fontStyle = fontSize + 'px ' + 'Arial';
-                
+
                 var ctx = this.getContext();
-    
+
                 ctx.save();
                 ctx.fillStyle = globalDefaults.defaultFontColor;
                 ctx.lineWidth = 1;
                 ctx.font = fontStyle;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-    
+
                 if(axesType==='xAxes') // bottom legend lable
                 {
                     labelString = scales[0].scaleLabel.labelString;
@@ -512,7 +510,7 @@
                     ctx.rotate(Math.PI * 1.5);
                     ctx.fillText(labelString, 0, 0 );
                 }
-    
+
                 ctx.restore();
             },
             linePoint(data, xPoint)
@@ -524,11 +522,11 @@
                 let tickStep = dataPoints.tickStep;
                 let height = dataPoints.tickHeight - options.topPadding;
                 let stepy = dataPoints.stepy;
-    
+
                 debugConsole('Draw.point()'); 
                 debugConsole('height : ' + height);
                 debugConsole('stepy : ' + stepy);
-    
+
                 data.forEach(function(i, index){ // data
                     var data = i;
                     let y;
@@ -542,7 +540,7 @@
                     }
                     let x = xPoint[index];
                     dataPoints[0].yPoint.push(y + options.topPadding);
-                  
+
                     ctx.save();
                     ctx.beginPath();
                     ctx.fillStyle = globalDefaults.dataPointColor;
@@ -556,7 +554,7 @@
                 let ctx = this.getContext();
                 ctx.save();
                 ctx.beginPath();
-    
+
                 let length = dataPoints[0].xPoint.length;
                 let xPoint = dataPoints[0].xPoint;
                 let yPoint = dataPoints[0].yPoint; 
@@ -571,15 +569,15 @@
                     ctx.lineTo(xPoint[i], yPoint[i]);
                     ctx.stroke();
                 }
-    
+
                 dataPoints[0].yPoint.splice(0);
                 ctx.restore();
             },
             baseCanvas(config)
             {
                 let opts = config.options;
-                let data = config.data; 
-    
+                let data = config.data;
+
                 this.drawGrid(data);
                 for(var i = 0; i < data.datasets.length; i++)
                 {
@@ -590,11 +588,11 @@
                     this.linePoint(i.data, dataPoints[0].xPoint);
                 });
                 */
-    
+
                 this.lineCurve();
-    
+
                 for(let axes in opts.scales)
-                {   
+                {
                     if(opts.scales[axes][0].display)
                     {
                         this.axisTitles(opts.scales[axes], axes);
@@ -609,32 +607,32 @@
             }
         }
         }
-    
-    
+
+
         let JChart = function(ctx, config)
         {
             if(!(this instanceof JChart))
             {
                 return new JChart(ctx, config);
             };
-    
+
             let me = this;
-    
+
             me.ctx = Helper.contextValidator(ctx, config);
             if(me.ctx < 0)  return -1;
-    
+
             me.config = Helper.initConfig(config);
-    
+
             me.draw = new Draw();
             me.draw.setContext(ctx);
-          
+
             me.bindEvent();
-    
+
             me.baseDrawing();
-       
+
             return {
                 update : function()
-                {   
+                {
                     me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
                     me.draw.baseCanvas(me.config);
                 },
@@ -660,52 +658,50 @@
                 }
             }
         };
-    
+
         JChart.prototype.bindEvent = function()
         {
-            let me = this; 
+            let me = this;
             let responsive = me.config.options.responsive || false;
             if(responsive)
             {
                 me.bindResizeEvent();
             }
         }
-    
+
         JChart.prototype.baseDrawing = function()
-        {   
+        {
             let me = this;
-    
+
             Helper.ratioCalculator(me.ctx);
-    
+
             Helper.computeSize(me.ctx);
             me.draw.baseCanvas(me.config);
         }
-       
+
         JChart.prototype.bindResizeEvent = function()
         {
             console.warn('responsive mode : on');
             var me = this;
-    
+
             window.addEventListener('resize',function(){
                 this.resizingCanvas();
             }.bind(me));
         }
-    
+
         JChart.prototype.resizingCanvas = function()
         {
             let me = this;
             Helper.ratioCalculator(me.ctx);
-    
+
             debugConsole(`resize width=${me.ctx.canvas.width} height=${me.ctx.canvas.height}`);
-    
+
             Helper.computeSize(me.ctx);
             me.draw.baseCanvas(this.config);
-        } 
-    
-    
+        }
+
+
         window.JChart = JChart;
-    
-       
+
+
     });
-    
-    
