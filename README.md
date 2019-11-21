@@ -16,9 +16,9 @@
 <section>기본적으로 config에 아무런 옵션이 없을 경우에도 표출이 된다. 그러나 의미있는 그래프를 그리기 위해서는 최소한  
 다음과 같은 설정이 필요하다.  
 
-<div style="text-align: center;">![c](./images/docs/usage-config_code.PNG) ![c](./images/docs/usage-config_chart.PNG)</div>
+<div style="text-align: center;">![c](https://github.com/judaihyun/canvas/tree/develop/images/docs/usage-config_code.PNG) ![c](./images/docs/usage-config_chart.PNG)</div>
 
-<div class="codeDes"><span class="note_title">config 기본 형식</span> ![c](./images/docs/usage-config_object.PNG)  
+<div class="codeDes"><span class="note_title">config 기본 형식</span> ![c](https://github.com/judaihyun/canvas/tree/develop/images/docs/usage-config_object.PNG)  
 
 더 자세한 설정 방법은 [config](api_3-1.html#config)</div>
 
