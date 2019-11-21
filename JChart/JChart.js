@@ -119,7 +119,7 @@
         {
             isExist(value)
             {
-                if(typeof value === 'undefined' && !value) return false;
+                if(!value) return false;
                 return true;
             },
             contextValidator(ctx, config)
