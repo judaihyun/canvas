@@ -17,6 +17,7 @@ let config =
             }*/ ]
     },
     options:{
+        ratio: {},
         layout: {
             padding: {
                 top: 40.5,

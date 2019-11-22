@@ -1,5 +1,5 @@
 
-    const CODE_VERSION = '0.6';
+    const CODE_VERSION = '0.7';
 
     (function(global, factory)
     {
@@ -146,11 +146,8 @@
 
                 config.options = config.options || defaultConfig.options;
 
-                console.log(defaultConfig); 
-                //computedSize = Object.assign(defaultConfig.options, config.options);
-                computedSize = mergeDeep(defaultConfig.options, config);
-                //console.log(computedSize);
-                console.log(computedSize);
+                config.options = mergeDeep(defaultConfig.options, config);
+                computedSize = config.options;
                 return config;
             },
             ratioCalculator(ctx)
@@ -599,46 +596,56 @@
 
             let me = this;
 
+            me.initialize(ctx, config);
+
+            me.update = function()
+            {
+                me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
+                me.draw.baseCanvas(me.config);
+            }
+            me.changeRatio = function()
+            {
+                Helper.computeSize(me.ctx);
+                me.baseDrawing();
+            }
+            me.getCurrentOpt = function()
+            {
+                return computedSize;
+            }
+            me.setLog = function(value)
+            {
+                if(Helper.isExist(value))
+                {
+                    DEBUG_MODE = value;
+                }
+            }
+            me.areaShow = function()
+            {
+                return Helper.drawingRect(ctx);
+            }
+            return me;
+        };
+
+    
+
+    
+
+        JChart.prototype.initialize = function(ctx, config)
+        {
+            let me = this;
+            me.draw = new Draw();
             me.ctx = Helper.contextValidator(ctx, config);
             if(me.ctx < 0)  return -1;
 
             me.config = Helper.mergeConfig(config);
 
-            me.draw = new Draw();
             me.draw.setContext(ctx);
 
             me.bindEvent();
 
             me.baseDrawing();
 
-            return {
-                update : function()
-                {
-                    me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
-                    me.draw.baseCanvas(me.config);
-                },
-                changeRatio : function()
-                {
-                    Helper.computeSize(me.ctx);
-                    me.baseDrawing();
-                },
-                getCurrentOpt : function()
-                {
-                    return computedSize;
-                },
-                setLog : function(value)
-                {
-                    if(Helper.isExist(value))
-                    {
-                        DEBUG_MODE = value;
-                    }
-                },
-                areaShow : function()
-                {
-                    return Helper.drawingRect(ctx);
-                }
-            }
-        };
+        }
 
         JChart.prototype.bindEvent = function()
         {
