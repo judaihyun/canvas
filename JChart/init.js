@@ -1,25 +1,23 @@
 
 let config = 
 {
-    type:'line',
+    type:'origin',
     data:{
         labels: [
-            'January','test','t2est','tt','234'
+            'Jan','Feb','Mar','Apr','May'
         ],
         datasets: [{
             label: 'firstLable',
             data: [
                 -50,1.5,-30
             ]
-        },{
+            }/*,{
             label: 'secondLable',
-            data: [
-                2,3,50
-            ]
-        }]
+            data:[-20]
+            }*/ ]
     },
     options:{
-        responsive: true,
+        ratio: {},
         layout: {
             padding: {
                 top: 40.5,
@@ -47,6 +45,7 @@ let config =
     }
 };
 
+
 document.addEventListener('DOMContentLoaded', function()
 {
 
@@ -58,40 +57,74 @@ document.addEventListener('DOMContentLoaded', function()
 
     let posDiv = document.getElementById('pos');
     let canvas = document.getElementById('myChart');
-    let drawWidth = document.getElementById('width');
+    let drawWidth = document.getElementById('drawingWidth');
     let ctx = canvas.getContext('2d');
 
     let guide = new Guide(ctx, canvas);
     guide.setDrawWidthEl(drawWidth);
     guide.setPosEl(posDiv);
-   
-    
+
+
     let myChart = new JChart(ctx, config);
-    let value = myChart.getComputed();
+    myChart.setLog(false);
+    let value = myChart.getCurrentOpt();
 
-
-
+    updateEl();
     window.addEventListener('resize',function(){
-        value = myChart.getComputed();
+        value = myChart.getCurrentOpt();
         updateEl();
     },false);
-  
-    (function updateEl(){
+ 
+    function updateEl(){
         document.getElementById('chartWidth').innerHTML = 'chartWidth : ' + value.layout.chartWidth;
         document.getElementById('chartHeight').innerHTML = 'chartHeight : ' + value.layout.chartHeight;
         document.getElementById('topPadding').innerHTML = 'topPadding : ' + value.layout.padding.top;
         document.getElementById('bottomPadding').innerHTML = 'bottomPadding : ' + value.layout.padding.bottom;
         document.getElementById('leftPadding').innerHTML = 'leftPadding : ' + value.layout.padding.left;
         document.getElementById('rightPadding').innerHTML = 'rightPadding : ' + value.layout.padding.right;
-    })();
+        document.getElementById('responsive').innerHTML = 'responsive : ' + value.responsive;
+    };
 
     document.getElementById('chartUpdate').addEventListener('click', function(){
         var dummy = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(), randomScalingFactor()];
-        //config.options.scales.xAxes[0].scaleLabel.labelString = 'test';
         console.warn('dummy : ' + dummy);
         config.data.datasets[0].data = dummy;
+        console.log(config);
         myChart.update();
     },false);
+
+    document.getElementById('changeRatio').addEventListener('click',()=>{
+        let ratioX = document.getElementById('ratioX').value || 21;
+        let ratioY = document.getElementById('ratioY').value || 9;
+        config.options.ratio.x = ratioX;
+        config.options.ratio.y = ratioY;
+        
+        myChart.changeRatio();
+        document.getElementsByClassName('currentRatio')[0].innerHTML = ratioX + ' : ' + ratioY;
+    },false);
+
+    document.getElementById('showBtn').addEventListener('click',function(){
+        let selected = document.getElementById('areaShow').selectedIndex;
+        switch(selected)
+        {
+            case 0:
+                myChart.areaShow().canvasArea();
+                break;
+            case 1:
+                myChart.areaShow().chartArea();
+                break;
+            case 2:
+                myChart.areaShow().bottomLabel();
+                break;
+            case 3:
+                myChart.areaShow().yTickLabel();
+                break;
+
+        }
+        
+    },false)
+
+
 
 
 },false);

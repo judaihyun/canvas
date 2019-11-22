@@ -19,45 +19,13 @@
 			// |----------------------------------------------------|
 
 	C0 : chartArea
-	B1 : x rangeAxis area
-	B2 : legendLable(bottomLable)
-	L1 : legendLable(leftLable);
-	L2 : y rangeAxis area(yTickLable)
+	B1 : x축 tick 영역
+	B2 : x축 legendLable(bottomLable)
+	L1 : y축 legendLable(leftLable);
+	L2 : y축 tick 영역 (yTickLable)
 	T1 : title
 	T2 : subtitle
 
-
-
-- config 
-type : object
-
-configuration 형식 
-
-type: 'line',  -> 일단 line만
-data: 
-{
-	labels: ['jan','feb'],
-	datasets: [
-	{
-		data:[0,1],
-	}]	
-},
-options:{
-	~~~
-}
-
-
-data : object
-: only one
-
-datasets : array like object
-: dataset[n] 을 갖음.
-
-datasets.data : array
-: dataset[n].data 
-
-options : object
-:
 
 
 procedure : 
@@ -82,3 +50,19 @@ procedure :
 6. resizeForResponsive()
 -> 6-1. computeSize(ctx);
 -> 6-2. baseCanvas(config);
+
+
+
+제공 메서드
+
+JChart.update() : config.data를 새로 읽어들여 새로 그린다.
+JChart.getCurrentOpt() : return Object, 현재 chart에 적용된 options 값을 반환.
+
+
+
+3가지 만들어야 할 문서
+1. 코딩에 관한 문서
+2. 프로세스에 관한 문서
+3. 공개에 대한 문서
+
+추후 유지보수가 진행되면서 문서와 코드가 달라지기 시작할 수 있는 것을 주의

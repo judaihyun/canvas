@@ -29,9 +29,9 @@ Guide = function(ctx, canvas)
 
     function windowToCanvas(x, y)
     {
-       var bbox = canvas.getBoundingClientRect();
-       return { x: x - bbox.left * (canvas.width / bbox.width),
-          y: y - bbox.top * (canvas.height / bbox.height) };
+        var bbox = canvas.getBoundingClientRect();
+        return { x:Math.floor(x - bbox.left),
+            y: y - bbox.top * (canvas.height / bbox.height) };
     }
 
 
@@ -67,7 +67,6 @@ Guide = function(ctx, canvas)
         saveDrawingSurface();
         if(e.ctrlKey)
         {
-            console.log('ctrl');
             mousePos.x = loc.x;
             mousePos.y = loc.y;
             dragging = true;
@@ -76,7 +75,7 @@ Guide = function(ctx, canvas)
         drawVerticalLine(loc.x);
         drawHorizontalLine(loc.y);
         ctx.restore();
-        me.posEl.innerText = loc.x + ',' +loc.y;
+        me.posEl.innerText = '[' + e.clientX+ '] , [' + e.clientY + ']';
 
     },false);
 
