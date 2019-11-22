@@ -1,7 +1,7 @@
 
 let config = 
 {
-    type:'line',
+    type:'origin',
     data:{
         labels: [
             'Jan','Feb','Mar','Apr','May'
@@ -17,7 +17,6 @@ let config =
             }*/ ]
     },
     options:{
-        responsive: true,
         layout: {
             padding: {
                 top: 40.5,

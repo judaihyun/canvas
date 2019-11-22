@@ -109,8 +109,8 @@
             */
         };
 
-        /* 실제 반영된 options*/
-        let computedOptions = {
+        /* 실제 반영 할 options ( layout-padding.., scales) */
+        let computedSize = {
         };
 
 
@@ -138,41 +138,19 @@
                     debugConsole(value, config[value]);
                 return ctx;
             },
-            initConfig(config)
+            mergeConfig(config)
             {
-                /* 보완이 매우 필요함. */
-            
-                if(!Helper.isExist(config.options))
-                {
-                    config.options = defaultConfig.options;
-                }
-                if(!Helper.isExist(config.data))
-                {
-                    config.data = defaultConfig.data;
-                }
-                if(!Helper.isExist(config.options.scales))
-                {
-                    config.options.scales = defaultConfig.scales;
-                }
-                if(!Helper.isExist(config.options.scales.xAxes[0].gridLines))
-                {
-                    config.options.scales.xAxes[0].gridLines = defaultConfig.options.scales.xAxes[0].gridLines;
-                }
-                if(!Helper.isExist(config.options.scales.yAxes[0].gridLines))
-                {
-                    config.options.scales.yAxes[0].gridLines = defaultConfig.options.scales.yAxes[0].gridLines;
-                }
-                if(!Helper.isExist(config.options.ratio))
-                {
-                    config.options.ratio = defaultConfig.options.ratio;
-                }
-                if(!Helper.isExist(config.options.layout))
-                {
-                    config.options.layout = defaultConfig.options.layout;
-                }
-                
-                Object.assign(computedOptions, config.options );
+                let data = config.data = config.data || {};
+                data.labels = data.labels || [];
+                data.datasets = data.datasets || [];
 
+                config.options = config.options || defaultConfig.options;
+
+                console.log(defaultConfig); 
+                //computedSize = Object.assign(defaultConfig.options, config.options);
+                computedSize = mergeDeep(defaultConfig.options, config);
+                //console.log(computedSize);
+                console.log(computedSize);
                 return config;
             },
             ratioCalculator(ctx)
@@ -185,8 +163,8 @@
 
                 console.log(`parent width=${parentWidth} height=${parentHeight}`);
 
-                let x = computedOptions.ratio.x;
-                let y = computedOptions.ratio.y;
+                let x = computedSize.ratio.x;
+                let y = computedSize.ratio.y;
 
                 debugConsole(`RATIO = ${x}:${y}`);
 
@@ -206,19 +184,21 @@
             },
             computeSize(ctx)
             {
-                if(computedOptions.layout.padding)
+                if(computedSize.layout.padding)
                 {
-                    computedOptions.layout.chartWidth = ctx.canvas.width -
-                                                    (computedOptions.layout.padding.left +
-                                                    computedOptions.layout.padding.right);
-                    computedOptions.layout.chartHeight = ctx.canvas.height -
-                                                    (computedOptions.layout.padding.top +
-                                                    computedOptions.layout.padding.bottom);
-                    computedOptions.layout.bottomLable = {
-                        width : computedOptions.layout.chartWidth + computedOptions.layout.padding.left,// + computedOptions.layout.padding.right,
-                        height : computedOptions.layout.padding.bottom +
-                                computedOptions.layout.chartHeight
+                    computedSize.layout.chartWidth = ctx.canvas.width -
+                                                    (computedSize.layout.padding.left +
+                                                    computedSize.layout.padding.right);
+                    computedSize.layout.chartHeight = ctx.canvas.height -
+                                                    (computedSize.layout.padding.top +
+                                                    computedSize.layout.padding.bottom);
+                    computedSize.layout.bottomLable = {
+                        width : computedSize.layout.chartWidth + computedSize.layout.padding.left,// + computedSize.layout.padding.right,
+                        height : computedSize.layout.padding.bottom +
+                                computedSize.layout.chartHeight
                     };
+                }else{
+                    console.error('computedSize.layout.padding is not defined')
                 }
             },
             niceScale(min, max)
@@ -296,17 +276,17 @@
                         ctx.save();
                         ctx.strokeStyle = 'red';
                         ctx.lineWidth = 3;
-                        ctx.strokeRect(computedOptions.layout.padding.left,
-                                computedOptions.layout.padding.top,
-                                computedOptions.layout.chartWidth,
-                                computedOptions.layout.chartHeight);
+                        ctx.strokeRect(computedSize.layout.padding.left,
+                                computedSize.layout.padding.top,
+                                computedSize.layout.chartWidth,
+                                computedSize.layout.chartHeight);
                         ctx.restore();
                     },
                     yTickLabel : () => {
                         ctx.save();
                         ctx.strokeStyle = 'green';
                         ctx.lineWidth = 3;
-                        ctx.strokeRect(30, 30, 30, computedOptions.layout.chartHeight);
+                        ctx.strokeRect(30, 30, 30, computedSize.layout.chartHeight);
                         ctx.restore();
                     },
                     bottomLabel : () => {
@@ -314,9 +294,9 @@
                         ctx.strokeStyle = 'blue';
                         ctx.lineWidth = 3;
                         ctx.strokeRect(0,
-                                    computedOptions.layout.padding.top + computedOptions.layout.chartHeight,
-                                    computedOptions.layout.bottomLable.width,
-                                    computedOptions.layout.bottomLable.height);
+                                    computedSize.layout.padding.top + computedSize.layout.chartHeight,
+                                    computedSize.layout.bottomLable.width,
+                                    computedSize.layout.bottomLable.height);
                         ctx.restore();
                     }
                 }
@@ -339,12 +319,12 @@
                 let width = ctx.canvas.width,
                     height = ctx.canvas.height;
 
-                let leftPadding = computedOptions.layout.padding.left,
-                    rightPadding = computedOptions.layout.padding.right,
-                    topPadding = computedOptions.layout.padding.top,
-                    bottomPadding = computedOptions.layout.padding.bottom,
-                    chartWidth = computedOptions.layout.chartWidth,
-                    chartHeight = computedOptions.layout.chartHeight;
+                let leftPadding = computedSize.layout.padding.left,
+                    rightPadding = computedSize.layout.padding.right,
+                    topPadding = computedSize.layout.padding.top,
+                    bottomPadding = computedSize.layout.padding.bottom,
+                    chartWidth = computedSize.layout.chartWidth,
+                    chartHeight = computedSize.layout.chartHeight;
 
 
                 return{
@@ -366,8 +346,8 @@
 
                 dataPoints[0].xPoint.splice(0);
                 ctx.save();
-                ctx.strokeStyle = computedOptions.scales.yAxes[0].gridLines.color;
-                ctx.lineWidth = computedOptions.scales.yAxes[0].gridLines.lineWidth;
+                ctx.strokeStyle = computedSize.scales.yAxes[0].gridLines.color;
+                ctx.lineWidth = computedSize.scales.yAxes[0].gridLines.lineWidth;
 
                 for(let x = options.leftPadding, yAxes = 0;
                     x <= width; x += stepx, yAxes++)
@@ -429,8 +409,8 @@
                 debugConsole('-----------');
 
                 ctx.save();
-                ctx.strokeStyle = computedOptions.scales.xAxes[0].gridLines.color;
-                let lineWidth = computedOptions.scales.xAxes[0].gridLines.lineWidth;
+                ctx.strokeStyle = computedSize.scales.xAxes[0].gridLines.color;
+                let lineWidth = computedSize.scales.xAxes[0].gridLines.lineWidth;
 
 
                 for(let y = options.topPadding;
@@ -502,7 +482,7 @@
                 {
                     labelString = scales[0].scaleLabel.labelString;
                     width = ctx.canvas.width / 2;
-                    ctx.fillText(labelString, width, computedOptions.layout.bottomLable.height + fontSize + 1);
+                    ctx.fillText(labelString, width, computedSize.layout.bottomLable.height + fontSize + 1);
                 }else if(axesType==='yAxes'){ // left legend lable
                     labelString = scales[0].scaleLabel.labelString;
                     width = ctx.canvas.width;
@@ -622,7 +602,7 @@
             me.ctx = Helper.contextValidator(ctx, config);
             if(me.ctx < 0)  return -1;
 
-            me.config = Helper.initConfig(config);
+            me.config = Helper.mergeConfig(config);
 
             me.draw = new Draw();
             me.draw.setContext(ctx);
@@ -644,7 +624,7 @@
                 },
                 getCurrentOpt : function()
                 {
-                    return computedOptions;
+                    return computedSize;
                 },
                 setLog : function(value)
                 {
@@ -706,3 +686,35 @@
 
 
     });
+
+
+
+
+
+function isObject(item) {
+        return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+/**
+* https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge/34749873#34749873
+* Deep merge two objects.
+* @param target
+* @param ...sources
+*/
+
+function mergeDeep(target, ...sources) {
+    if (!sources.length) return target;
+    const source = sources.shift();
+      
+    if (isObject(target) && isObject(source)) {
+        for (const key in source) {
+            if (isObject(source[key])) {
+                if (!target[key]) Object.assign(target, { [key]: {} });
+                mergeDeep(target[key], source[key]);
+            } else {
+              Object.assign(target, { [key]: source[key] });
+            }
+        }
+    }
+    return mergeDeep(target, ...sources);
+}
