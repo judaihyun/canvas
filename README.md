@@ -31,7 +31,7 @@
 ![c](https://github.com/judaihyun/canvas/blob/develop/images/docs/usage-config_object.PNG)  
 
 
-더 자세한 설정 방법은 [config](api_3-1.html#config)</div>
+</div>
 
 </section>
 
