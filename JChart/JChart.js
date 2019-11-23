@@ -308,9 +308,7 @@
             yPoint : []
         }];
 
-        let Draw = function(){
-
-        return{
+        let Draw = {
             drawOptions()
             {
                 let ctx = this.getContext();
@@ -552,15 +550,16 @@
                 dataPoints[0].yPoint.splice(0);
                 ctx.restore();
             },
-            baseCanvas(config)
+            baseCanvas()
             {
-                let opts = config.options;
-                let data = config.data;
+                Draw.setContext(this.ctx);
+                let opts = this.config.options;
+                let data = this.config.data;
 
-                this.drawGrid(data);
+                Draw.drawGrid(data);
                 for(var i = 0; i < data.datasets.length; i++)
                 {
-                    this.linePoint(data.datasets[i].data, dataPoints[0].xPoint);
+                    Draw.linePoint(data.datasets[i].data, dataPoints[0].xPoint);
                 }
                 /*
                 data.datasets.forEach(function(i, index){
@@ -568,13 +567,13 @@
                 });
                 */
 
-                this.lineCurve();
+                Draw.lineCurve();
 
                 for(let axes in opts.scales)
                 {
                     if(opts.scales[axes][0].display)
                     {
-                        this.axisTitles(opts.scales[axes], axes);
+                        Draw.axisTitles(opts.scales[axes], axes);
                     }
                 }
             },
@@ -584,7 +583,7 @@
             setContext(_ctx){
                 this.ctx = _ctx;
             }
-        }
+        
         }
 
 
@@ -601,7 +600,7 @@
             this.update = function()
             {
                 this.ctx.clearRect(0,0, this.ctx.canvas.width, this.ctx.canvas.height);
-                this.draw.baseCanvas(this.config);
+                Draw.baseCanvas.call(this);
             }
             this.changeRatio = function()
             {
@@ -628,13 +627,13 @@
     
         JChart.prototype.initialize = function(ctx, config)
         {
-            this.draw = new Draw(); //TODO new 안쓰는 방안(차트 2개 생성시..)
+            //this.draw = new Draw(); //TODO new 안쓰는 방안(차트 2개 생성시..)
             this.ctx = Helper.contextValidator(ctx, config);
             if(this.ctx < 0)  return -1;
 
             this.config = Helper.mergeConfig(config);
 
-            this.draw.setContext(ctx);
+            Draw.setContext(ctx);
 
             this.bindEvent();
 
@@ -656,7 +655,7 @@
             Helper.ratioCalculator(this.ctx);
 
             Helper.computeSize(this.ctx);
-            this.draw.baseCanvas(this.config);
+            Draw.baseCanvas.call(this);
         }
 
         JChart.prototype.bindResizeEvent = function()
@@ -675,7 +674,7 @@
             debugConsole(`resize width=${this.ctx.canvas.width} height=${this.ctx.canvas.height}`);
 
             Helper.computeSize(this.ctx);
-            this.draw.baseCanvas(this.config);
+            Draw.baseCanvas.call(this);
         }
 
 
