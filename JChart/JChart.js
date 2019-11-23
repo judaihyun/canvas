@@ -141,11 +141,8 @@
 
                 config.options = config.options || defaultConfig.options;
 
-                //config = Object.assign({}, defaultConfig.options, config.options);
-                config.options = extend({}, defaultConfig.options, config.options);
-                console.log(config);
+                config.options = appendConfig({}, defaultConfig.options, config.options);
                 computedSize = config.options;
-                console.log(computedSize);
                 return config;
             },
             ratioCalculator(ctx)  /* FIXME : 초기 구동 시 여러번 
@@ -696,14 +693,14 @@
 * @param source 
 */
 
-function extend(target) {
+function appendConfig(target) {
     for(var i=1; i<arguments.length; ++i) {
         var from = arguments[i];
         if(typeof from !== 'object') continue;
         for(var j in from) {
             if(from.hasOwnProperty(j)) {
                 target[j] = typeof from[j]==='object'
-                ? extend({}, target[j], from[j])
+                ? appendConfig({}, target[j], from[j])
                 : from[j];
             }
         }
