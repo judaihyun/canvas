@@ -150,7 +150,8 @@
                 computedSize = config.options;
                 return config;
             },
-            ratioCalculator(ctx)
+            ratioCalculator(ctx)  /* FIXME : 초기 구동 시 여러번 
+            changeRatio () 호출 시마다 계속적으로 계산함.. (소수점단위??) */
             {
                 let obj = {};
                 let diagonal = 0;
@@ -594,98 +595,87 @@
                 return new JChart(ctx, config);
             };
 
-            let me = this;
 
-            me.initialize(ctx, config);
+            this.initialize(ctx, config);
 
-            me.update = function()
+            this.update = function()
             {
-                me.ctx.clearRect(0,0, me.ctx.canvas.width, me.ctx.canvas.height);
-                me.draw.baseCanvas(me.config);
+                this.ctx.clearRect(0,0, this.ctx.canvas.width, this.ctx.canvas.height);
+                this.draw.baseCanvas(this.config);
             }
-            me.changeRatio = function()
+            this.changeRatio = function()
             {
-                Helper.computeSize(me.ctx);
-                me.baseDrawing();
+                Helper.computeSize(this.ctx);
+                this.baseDrawing();
             }
-            me.getCurrentOpt = function()
+            this.getCurrentOpt = function()
             {
                 return computedSize;
             }
-            me.setLog = function(value)
+            this.setLog = function(value)
             {
                 if(Helper.isExist(value))
                 {
                     DEBUG_MODE = value;
                 }
             }
-            me.areaShow = function()
+            this.areaShow = function()
             {
                 return Helper.drawingRect(ctx);
             }
-            return me;
+            return this;
         };
-
     
-
-    
-
         JChart.prototype.initialize = function(ctx, config)
         {
-            let me = this;
-            me.draw = new Draw();
-            me.ctx = Helper.contextValidator(ctx, config);
-            if(me.ctx < 0)  return -1;
+            this.draw = new Draw(); //TODO new 안쓰는 방안(차트 2개 생성시..)
+            this.ctx = Helper.contextValidator(ctx, config);
+            if(this.ctx < 0)  return -1;
 
-            me.config = Helper.mergeConfig(config);
+            this.config = Helper.mergeConfig(config);
 
-            me.draw.setContext(ctx);
+            this.draw.setContext(ctx);
 
-            me.bindEvent();
+            this.bindEvent();
 
-            me.baseDrawing();
+            this.baseDrawing();
 
         }
 
         JChart.prototype.bindEvent = function()
         {
-            let me = this;
-            let responsive = me.config.options.responsive || false;
+            let responsive = this.config.options.responsive || false;
             if(responsive)
             {
-                me.bindResizeEvent();
+                this.bindResizeEvent();
             }
         }
 
         JChart.prototype.baseDrawing = function()
         {
-            let me = this;
+            Helper.ratioCalculator(this.ctx);
 
-            Helper.ratioCalculator(me.ctx);
-
-            Helper.computeSize(me.ctx);
-            me.draw.baseCanvas(me.config);
+            Helper.computeSize(this.ctx);
+            this.draw.baseCanvas(this.config);
         }
 
         JChart.prototype.bindResizeEvent = function()
         {
             console.warn('responsive mode : on');
-            var me = this;
 
             window.addEventListener('resize',function(){
                 this.resizingCanvas();
-            }.bind(me));
+            }.bind(this));
         }
 
         JChart.prototype.resizingCanvas = function()
         {
-            let me = this;
-            Helper.ratioCalculator(me.ctx);
+            Helper.ratioCalculator(this.ctx);
 
-            debugConsole(`resize width=${me.ctx.canvas.width} height=${me.ctx.canvas.height}`);
+            debugConsole(`resize width=${this.ctx.canvas.width} height=${this.ctx.canvas.height}`);
 
-            Helper.computeSize(me.ctx);
-            me.draw.baseCanvas(this.config);
+            Helper.computeSize(this.ctx);
+            this.draw.baseCanvas(this.config);
         }
 
 
