@@ -1,9 +1,10 @@
 
+
+
     const CODE_VERSION = '0.7';
 
     (function(global, factory)
     {
-        'use strict';
         // UMD,  if module object exists, then CommonJS
         // if define object exists, then AMD
         // others global.useModuleName = factory()
@@ -12,6 +13,7 @@
     })(window, function(window){
 
         let DEBUG_MODE = false;
+
 
         function debugConsole(str)
         {
@@ -42,14 +44,6 @@
         /* JChart 생성시 config가 비어있을 경우 이 defaultConfig 값을 사용 */
         const defaultConfig =
         {
-            data:{
-                labels: [''
-                ],
-                datasets: [{
-                    label: '',
-                    data: []
-                    }]
-            },
             options:{
                 responsive: true,
                 ratio: {
@@ -109,6 +103,7 @@
             */
         };
 
+        Object.freeze(defaultConfig);
         /* 실제 반영 할 options ( layout-padding.., scales) */
         let computedSize = {
         };
@@ -146,8 +141,11 @@
 
                 config.options = config.options || defaultConfig.options;
 
-                config.options = mergeDeep(defaultConfig.options, config);
+                //config = Object.assign({}, defaultConfig.options, config.options);
+                config.options = extend({}, defaultConfig.options, config.options);
+                console.log(config);
                 computedSize = config.options;
+                console.log(computedSize);
                 return config;
             },
             ratioCalculator(ctx)  /* FIXME : 초기 구동 시 여러번 
@@ -687,30 +685,28 @@
 
 
 
-function isObject(item) {
-        return (item && typeof item === 'object' && !Array.isArray(item));
-}
+    
 
 /**
-* https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge/34749873#34749873
-* Deep merge two objects.
+* https://stackoverflow.com/a/20591261/9373458
+* merge two objects.
+* usage :  extend(target, obj1, obj2)
 * @param target
-* @param ...sources
+* @param default
+* @param source 
 */
 
-function mergeDeep(target, ...sources) {
-    if (!sources.length) return target;
-    const source = sources.shift();
-      
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                if (!target[key]) Object.assign(target, { [key]: {} });
-                mergeDeep(target[key], source[key]);
-            } else {
-              Object.assign(target, { [key]: source[key] });
+function extend(target) {
+    for(var i=1; i<arguments.length; ++i) {
+        var from = arguments[i];
+        if(typeof from !== 'object') continue;
+        for(var j in from) {
+            if(from.hasOwnProperty(j)) {
+                target[j] = typeof from[j]==='object'
+                ? extend({}, target[j], from[j])
+                : from[j];
             }
         }
     }
-    return mergeDeep(target, ...sources);
+    return target;
 }
