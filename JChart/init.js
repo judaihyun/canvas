@@ -1,4 +1,3 @@
-
 let config = 
 {
     type:'origin',

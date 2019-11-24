@@ -6,13 +6,104 @@
     <script data-require="jasmine@2.0.0" data-semver="2.0.0" src="http://cdn.jsdelivr.net/jasmine/2.0.0/jasmine.js"></script>
     <script data-require="jasmine@2.0.0" data-semver="2.0.0" src="http://cdn.jsdelivr.net/jasmine/2.0.0/jasmine-html.js"></script>
     <script data-require="jasmine@2.0.0" data-semver="2.0.0" src="http://cdn.jsdelivr.net/jasmine/2.0.0/boot.js"></script>
-
+    <script src='../JChart/JChart.js'></script>
+    <script src='specs/helper_test.js'></script>
   </head>
 
   <body>
 
 <script>
-  
+ 
+ let config = 
+{
+    type:'origin',
+    data:{
+        labels: [
+            'Jan','Feb','Mar','Apr','May'
+        ],
+        datasets: [{
+            label: 'firstLable',
+            data: [
+                -50,1.5,-30
+            ]
+            }/*,{
+            label: 'secondLable',
+            data:[-20]
+            }*/ ]
+    },
+    options:{
+      responsive : true,
+        ratio: {},
+        layout: {
+            padding: {
+                top: 40.5,
+				        right: 40,
+				        bottom: 60.5,
+				        left: 65.5
+            }
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Month'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Value'
+                }
+            }]
+        } 
+    }
+};
+
+
+function iterator(target)
+{
+  for(var prop in target)
+  {
+    if(target.hasOwnProperty(prop))
+    {
+      if(typeof target[prop] === 'object' && !Array.isArray(target[prop]))
+      {
+        console.log('[object] ' + prop);
+        iterator(target[prop]);
+      }else if(Array.isArray(target[prop]))
+      {
+        console.log('[array] ' + prop);
+        var temp = target[prop];
+        for(var i = 0; i < temp.length; ++i)
+        {
+          if(typeof temp[i] === 'object' && !Array.isArray(temp[i]))
+          {
+            iterator(temp[i]);
+          }else{
+            console.log('['+i+'] ' + temp[i]);
+          }
+        }
+      }
+      else if(typeof target[prop] === 'string')
+      {
+        console.log('[string] ' + prop+ ' ' + target[prop]);
+      }
+      else if(typeof target[prop] === 'boolean')
+      {
+        console.log('[boolean] ' + prop+ ' ' + target[prop]);
+      }
+    }
+  }
+}
+
+/*
+iterator(config);
+console.log(JSON.stringify(config));
+console.log(Object.keys(config));
+console.log(Object.entries(config));
+*/
 </script>
 </body>
 
