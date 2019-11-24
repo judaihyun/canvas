@@ -129,8 +129,8 @@
                 }
 
                 // TODO validate config{}
-                for(let value in config)
-                    console.log(value, config[value]);
+                objIterator(config);
+
                 return ctx;
             },
             mergeConfig(config)
@@ -620,7 +620,6 @@
     
         JChart.prototype.initialize = function(ctx, config)
         {
-            //this.draw = new Draw(); //TODO new 안쓰는 방안(차트 2개 생성시..)
             this.ctx = Helper.contextValidator(ctx, config);
             if(this.ctx < 0)  return -1;
 
@@ -704,4 +703,45 @@ function appendConfig(target) {
         }
     }
     return target;
+}
+
+
+/**
+ *  
+ */
+
+function objIterator(target)
+{
+  for(var prop in target)
+  {
+    if(Object.prototype.hasOwnProperty.call(target, prop))
+    {
+      if(typeof target[prop] === 'object' && !Array.isArray(target[prop]))
+      {
+        console.log('[object] ' + prop);
+        objIterator(target[prop]);
+      }else if(Array.isArray(target[prop]))
+      {
+        console.log('[array] ' + prop);
+        var temp = target[prop];
+        for(var i = 0; i < temp.length; ++i)
+        {
+          if(typeof temp[i] === 'object' && !Array.isArray(temp[i]))
+          {
+            objIterator(temp[i]);
+          }else{
+            console.log('['+i+'] ' + temp[i]);
+          }
+        }
+      }
+      else if(typeof target[prop] === 'string')
+      {
+        console.log('[string] ' + prop+ ' ' + target[prop]);
+      }
+      else if(typeof target[prop] === 'boolean')
+      {
+        console.log('[boolean] ' + prop+ ' ' + target[prop]);
+      }
+    }
+  }
 }
