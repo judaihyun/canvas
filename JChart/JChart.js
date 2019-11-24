@@ -130,7 +130,7 @@
 
                 // TODO validate config{}
                 for(let value in config)
-                    debugConsole(value, config[value]);
+                    console.log(value, config[value]);
                 return ctx;
             },
             mergeConfig(config)
@@ -454,7 +454,6 @@
             axisTitles(scales, axesType)
             {
                 var labelString,
-                    fontStyle,
                     width,
                     height,
                 fontSize = globalDefaults.defaultFontSize,
@@ -490,7 +489,6 @@
                 let ctx = this.getContext();
                 let options = this.drawOptions();
                 let niceMax = dataPoints.niceMax;
-                let niceMin = dataPoints.niceMin;
                 let tickStep = dataPoints.tickStep;
                 let height = dataPoints.tickHeight - options.topPadding;
                 let stepy = dataPoints.stepy;
@@ -587,7 +585,7 @@
             if(!(this instanceof JChart))
             {
                 return new JChart(ctx, config);
-            };
+            }
 
 
             this.initialize(ctx, config);
@@ -698,7 +696,7 @@ function appendConfig(target) {
         var from = arguments[i];
         if(typeof from !== 'object') continue;
         for(var j in from) {
-            if(from.hasOwnProperty(j)) {
+            if(Object.prototype.hasOwnProperty.call(from, j)) {
                 target[j] = typeof from[j]==='object'
                 ? appendConfig({}, target[j], from[j])
                 : from[j];
