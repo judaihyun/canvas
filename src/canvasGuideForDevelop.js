@@ -63,17 +63,17 @@ Guide = function(ctx, canvas)
 
 
     canvas.addEventListener('mousedown',function(e){
-        var loc = windowToCanvas(e.clientX, e.clientY);
+        let inLoc = windowToCanvas(e.clientX, e.clientY);
         saveDrawingSurface();
         if(e.ctrlKey)
         {
-            mousePos.x = loc.x;
-            mousePos.y = loc.y;
+            mousePos.x = inLoc.x;
+            mousePos.y = inLoc.y;
             dragging = true;
         }
         ctx.strokeStyle = 'red';
-        drawVerticalLine(loc.x);
-        drawHorizontalLine(loc.y);
+        drawVerticalLine(inLoc.x);
+        drawHorizontalLine(inLoc.y);
         ctx.restore();
         me.posEl.innerText = '[' + e.clientX+ '] , [' + e.clientY + ']';
 
@@ -103,8 +103,10 @@ Guide = function(ctx, canvas)
         dragging = false;
     },false);
 
+    /*
     return{
         setDrawWidthEl, setPosEl
     }
+    */
 
 };
