@@ -59,9 +59,12 @@ document.addEventListener('DOMContentLoaded', function()
     let drawWidth = document.getElementById('drawingWidth');
     let ctx = canvas.getContext('2d');
 
+    
+    /*
     let guide = new Guide(ctx, canvas);
     guide.setDrawWidthEl(drawWidth);
     guide.setPosEl(posDiv);
+    */
 
 
     let myChart = new JChart(ctx, config);

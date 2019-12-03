@@ -3,7 +3,6 @@ import {niceScale} from './scale.calculate';
 import {ratioCalculator, computeSize} from './size.calculate';
 import { isExist, contextValidator, drawingRect } from './utils';
 import {mergeConfig} from './merge';
-import { computedSize } from '../options/values';
 
 'use strict'
 
@@ -24,6 +23,5 @@ Helper.drawingRect = drawingRect;
 Helper.mergeConfig = mergeConfig;
 Helper.computeSize = computeSize;
 
-console.dir(Helper);
 
 export { debugConsole, Helper, DEBUG_MODE };

@@ -1,4 +1,9 @@
 
+/* https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/log10 */
+Math.log10 = Math.log10 || function(x) {
+    return Math.log(x) * Math.LOG10E;
+};
+
 export function niceScale(min, max) {
     /*
         to get a 'nice number' algorithm. detail below 
@@ -30,6 +35,7 @@ export function niceScale(min, max) {
 
 }
 
+
 function niceNum(localRange, round) {
     var exponent; /** exponent of localRange */
     var fraction; /** fractional part of localRange */
@@ -59,3 +65,18 @@ function niceNum(localRange, round) {
     }
     return niceFraction * Math.pow(10, exponent);
 }
+
+
+/*
+//   https://github.com/chartjs/Chart.js/blob/master/src/helpers/helpers.math.js  
+export const log10 = Math.log10 || function(x) {
+	var exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
+	// Check for whole powers of 10,
+	// which due to floating point rounding error should be corrected.
+	var powerOf10 = Math.round(exponent);
+	var isPowerOf10 = x === Math.pow(10, powerOf10);
+
+	return isPowerOf10 ? powerOf10 : exponent;
+};
+*/
+
