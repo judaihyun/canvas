@@ -1,8 +1,10 @@
 import {computedSize} from '../options/values';
 import {debugConsole} from './index';
 
-function computeSize(ctx) {
-    if (computedSize.options.layout.padding) {
+function computeSize(ctx) 
+{
+    if (computedSize.options.layout.padding) 
+    {
         computedSize.options.layout.chartWidth = ctx.canvas.width -
             (computedSize.options.layout.padding.left +
                 computedSize.options.layout.padding.right);
@@ -19,8 +21,8 @@ function computeSize(ctx) {
     }
 }
 
-function ratioCalculator(ctx)  /* FIXME : 초기 구동 시 여러번 
-    changeRatio () 호출 시마다 계속적으로 계산함.. (소수점단위??) */ {
+function ratioCalculator(ctx)  /* FIXME : 초기 구동 시  changeRatio () 호출 시마다 계속적으로 계산함.. (소수점단위??) */ 
+{
     let obj = {};
     let diagonal = 0;
     let parentNode = ctx.canvas.parentNode;
