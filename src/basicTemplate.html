@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='../css/reset.css' type='text/css'/>
+        <link rel='stylesheet' href='../css/normalize.css' type='text/css'/>
+        <link rel='stylesheet' href='../css/basicTemplate.css' type='text/css'/>
+        <script src='canvasGuideForDevelop.js'></script>
+        <script src='randomGenerator.js'></script>
+        <script src='../dist/main.bundles.js'></script>
+        <script src='init.js'></script>
+    </head>
+    <body>
+        <div class='canvasContainer' style='width:70%'>
+            <canvas id="myChart">Canvas Not supported</canvas>
+        </div>
+        <div id='drawingWidth'></div>
+        <div class='infoBox'>
+            <div class='chartSize'>
+                <div>현재 설정 값</div>
+                <div id='chartWidth'></div>
+                <div id='chartHeight'></div>
+                <div id='leftPadding'></div>
+                <div id='rightPadding'></div>
+                <div id='bottomPadding'></div>
+                <div id='topPadding'></div>
+                <div id='responsive'></div>
+                <span>현재 종횡비 : <p class='currentRatio'>21 : 9</p></span>
+            </div>
+            <div class='right'>
+            <div class='areaBox'>
+                <label for='areaShow'>영역표시</label>
+                <select id='areaShow'>
+                    <option value='1'>canvasArea</option>
+                    <option value='2'>chartArea</option>
+                    <option value='3'>xAxisCategory</option>
+                    <option value='4'>yAxisTitle</option>
+                </select>
+                <button type='button' id='showBtn'>show</button>
+            </div>
+            <div class='controlBox'>
+                <div class='ratioSize'>
+                    <input type='text' class='ratioInput' id='ratioX'></input>
+                    <input type='text' class='ratioInput' id='ratioY'></input>
+                    <button type='button' id='changeRatio'>종횡비 변환</button>
+                </div>
+            </div>
+            <div style='display:inline-block;'>
+                <button type='button' id='chartUpdate'>차트 갱신</button>
+            </div>
+        </div>
+    </div>
+
+        <div id='pos'></div>
+    </body>
+</html>

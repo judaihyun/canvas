@@ -1,0 +1,197 @@
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/main.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/core/draw.js":
+/*!**************************!*\
+  !*** ./src/core/draw.js ***!
+  \**************************/
+/*! exports provided: Draw */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Draw\", function() { return Draw; });\n/* harmony import */ var _options_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../options/values */ \"./src/options/values.js\");\n/* harmony import */ var _helper_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helper/index */ \"./src/helper/index.js\");\n\r\n\r\n\r\n\r\n\r\n\r\nlet Draw = {\r\n    drawOptions() {\r\n        let ctx = this.getContext();\r\n        let width = ctx.canvas.width,\r\n            height = ctx.canvas.height;\r\n\r\n        let leftPadding = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.left,\r\n            rightPadding = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.right,\r\n            topPadding = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.top,\r\n            bottomPadding = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.bottom,\r\n            chartWidth = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.chartWidth,\r\n            chartHeight = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.chartHeight;\r\n\r\n\r\n        return {\r\n            width, height, leftPadding,\r\n            rightPadding, topPadding, bottomPadding,\r\n            chartWidth, chartHeight\r\n        }\r\n    },\r\n    yGridWithLabel(label) /* it depends on labels */ {\r\n        let ctx = this.getContext();\r\n        let options = this.drawOptions();\r\n\r\n        let labelLength = label.length || 1;\r\n        let stepx = options.chartWidth / (labelLength - 1);\r\n        let height = options.chartHeight + options.topPadding;\r\n        let width = options.chartWidth + options.leftPadding;\r\n\r\n\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].xPoint.splice(0);\r\n        ctx.save();\r\n        ctx.strokeStyle = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.scales.yAxes[0].gridLines.color;\r\n        ctx.lineWidth = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.scales.yAxes[0].gridLines.lineWidth;\r\n\r\n        for (let x = options.leftPadding, yAxes = 0;\r\n            x <= width; x += stepx, yAxes++) {\r\n            ctx.beginPath();\r\n            ctx.moveTo(x, options.topPadding);\r\n            ctx.lineTo(x, height);\r\n\r\n            _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].xPoint.push(x);\r\n            this.bottomLabel(label[yAxes], x, options.chartHeight + options.bottomPadding);\r\n            ctx.stroke();\r\n        }\r\n\r\n        ctx.restore();\r\n    },\r\n    bottomLabel(string, x, y) {\r\n        if (!string) return;\r\n        var ctx = this.getContext();\r\n        ctx.fillText(string, x, y);\r\n    },\r\n    xGridWithLabel(max, min) {\r\n        let ctx = this.getContext();\r\n        let options = this.drawOptions();\r\n\r\n        let nice, niceMax, niceMin, tickStep, yTickNumber;\r\n        if (max !== min) {\r\n            nice = _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].niceScale(min, max);\r\n            niceMax = nice.niceMaximum;\r\n            niceMin = nice.niceMinimum;\r\n            tickStep = nice.tickSpacing;\r\n            yTickNumber = (niceMax - niceMin) / tickStep + 1;\r\n        } else {\r\n            tickStep = 0.2;\r\n            niceMax = max + (tickStep * 5);\r\n            niceMin = max - (tickStep * 5);\r\n            yTickNumber = 11;\r\n        }\r\n\r\n\r\n        let stepy = Math.ceil((options.chartHeight) / yTickNumber);\r\n        let yTick = niceMax;\r\n        let height = options.chartHeight + options.topPadding;\r\n        let width = options.chartWidth + options.leftPadding;\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].tickNumber = yTickNumber;\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].niceMax = niceMax;\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].niceMin = niceMin;\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].tickStep = tickStep;\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].stepy = stepy;\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('-----------');\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('tickStep: ' + tickStep);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('niceMax : ' + niceMax);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('niceMin : ' + niceMin);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('yTickNumber : ' + yTickNumber);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('stepy : ' + stepy);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('tickStep : ' + tickStep);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('-----------');\r\n\r\n        ctx.save();\r\n        ctx.strokeStyle = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.scales.xAxes[0].gridLines.color;\r\n        let lineWidth = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.scales.xAxes[0].gridLines.lineWidth;\r\n\r\n\r\n        for (let y = options.topPadding;\r\n            y < height;\r\n            y += stepy) {\r\n            ctx.beginPath();\r\n            ctx.lineWidth = lineWidth;\r\n            if (yTick === 0) {\r\n                ctx.lineWidth = lineWidth * 2;\r\n            }\r\n            this.yTickLabel(yTick, options.leftPadding - 20, y);\r\n            ctx.moveTo(options.leftPadding - 10, y);\r\n            ctx.lineTo(width, y);\r\n            yTick -= tickStep;\r\n            ctx.stroke();\r\n            _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].tickHeight = y;\r\n        }\r\n        ctx.restore();\r\n    },\r\n    yTickLabel(tick, x, y) {\r\n        let ctx = this.getContext();\r\n        let yTick = tick.toFixed(1);\r\n        ctx.fillText(yTick, x, y);\r\n    },\r\n    drawGrid(data) {\r\n        let ctx = this.getContext();\r\n\r\n        let fontSize = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"globalDefaults\"].defaultFontSize,\r\n            fontStyle = fontSize + 'px ' + 'Arial';\r\n        ctx.font = fontStyle,\r\n            ctx.textAlign = 'center',\r\n            ctx.textBaseline = 'middle';\r\n\r\n        let label = data.labels;\r\n\r\n        this.yGridWithLabel(label);\r\n\r\n        let dataValue = data.datasets[0].data;\r\n        let maxValue = Math.max.apply(null, dataValue);\r\n        let minValue = Math.min.apply(null, dataValue);\r\n\r\n        this.xGridWithLabel(maxValue, minValue);\r\n\r\n\r\n    },\r\n    axisTitles(scales, axesType) {\r\n        var labelString,\r\n            width,\r\n            height,\r\n            fontSize = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"globalDefaults\"].defaultFontSize,\r\n            fontStyle = fontSize + 'px ' + 'Arial';\r\n\r\n        var ctx = this.getContext();\r\n\r\n        ctx.save();\r\n        ctx.fillStyle = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"globalDefaults\"].defaultFontColor;\r\n        ctx.lineWidth = 1;\r\n        ctx.font = fontStyle;\r\n        ctx.textAlign = 'center';\r\n        ctx.textBaseline = 'middle';\r\n\r\n        if (axesType === 'xAxes') // bottom legend lable\r\n        {\r\n            labelString = scales[0].scaleLabel.labelString;\r\n            width = ctx.canvas.width / 2;\r\n            ctx.fillText(labelString, width, _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.bottomLable.height + fontSize + 1);\r\n        } else if (axesType === 'yAxes') { // left legend lable\r\n            labelString = scales[0].scaleLabel.labelString;\r\n            width = ctx.canvas.width;\r\n            height = ctx.canvas.height / 2;\r\n            ctx.translate(25, height);\r\n            ctx.rotate(Math.PI * 1.5);\r\n            ctx.fillText(labelString, 0, 0);\r\n        }\r\n\r\n        ctx.restore();\r\n    },\r\n    linePoint(data, xPoint) {\r\n        let ctx = this.getContext();\r\n        let options = this.drawOptions();\r\n        let niceMax = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].niceMax;\r\n        let tickStep = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].tickStep;\r\n        let height = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].tickHeight - options.topPadding;\r\n        let stepy = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"].stepy;\r\n\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('Draw.point()');\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('height : ' + height);\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('stepy : ' + stepy);\r\n\r\n        data.forEach(function (i, index) { // data\r\n            var data = i;\r\n            let y;\r\n            if (data === 0) {\r\n                y = (niceMax / tickStep) * stepy;\r\n            } else if (data < 0) {\r\n                data *= -1;\r\n                y = ((stepy / tickStep) * data) + ((niceMax / tickStep) * stepy);\r\n            } else if (data > 0) {\r\n                y = ((stepy / tickStep) * niceMax) - (stepy / tickStep) * data;\r\n            }\r\n            let x = xPoint[index];\r\n            _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].yPoint.push(y + options.topPadding);\r\n\r\n            ctx.save();\r\n            ctx.beginPath();\r\n            ctx.fillStyle = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"globalDefaults\"].dataPointColor;\r\n            ctx.arc(x, y + options.topPadding, 3, 0, Math.PI * 2);\r\n            ctx.fill();\r\n            ctx.restore();\r\n        });\r\n    },\r\n    lineCurve() {\r\n        let ctx = this.getContext();\r\n        ctx.save();\r\n        ctx.beginPath();\r\n\r\n        let length = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].xPoint.length;\r\n        let xPoint = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].xPoint;\r\n        let yPoint = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].yPoint;\r\n        Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])(_options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].yPoint);\r\n        ctx.moveTo(xPoint[0], yPoint[0]);\r\n        ctx.strokeStyle = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"globalDefaults\"].curveLineColor;\r\n        ctx.lineWidth = 2;\r\n        for (let i = 0; i < length; i++) {\r\n            Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('x : ' + xPoint[i]);\r\n            Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])('y : ' + yPoint[i]);\r\n            ctx.lineTo(xPoint[i], yPoint[i]);\r\n            ctx.stroke();\r\n        }\r\n\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].yPoint.splice(0);\r\n        ctx.restore();\r\n    },\r\n    baseCanvas() {\r\n        Draw.setContext(this.ctx);\r\n        let opts = this.config.options;\r\n        let data = this.config.data;\r\n\r\n        Draw.drawGrid(data);\r\n        for (var i = 0; i < data.datasets.length; i++) {\r\n            Draw.linePoint(data.datasets[i].data, _options_values__WEBPACK_IMPORTED_MODULE_0__[\"dataPoints\"][0].xPoint);\r\n        }\r\n        /*\r\n        data.datasets.forEach(function(i, index){\r\n            this.linePoint(i.data, dataPoints[0].xPoint);\r\n        });\r\n        */\r\n\r\n        Draw.lineCurve();\r\n\r\n        for (let axes in opts.scales) {\r\n            if (opts.scales[axes][0].display) {\r\n                Draw.axisTitles(opts.scales[axes], axes);\r\n            }\r\n        }\r\n    },\r\n    getContext() {\r\n        return this.ctx;\r\n    },\r\n    setContext(_ctx) {\r\n        this.ctx = _ctx;\r\n    }\r\n\r\n}\r\n\r\n\n\n//# sourceURL=webpack:///./src/core/draw.js?");
+
+/***/ }),
+
+/***/ "./src/core/engine.js":
+/*!****************************!*\
+  !*** ./src/core/engine.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _options_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../options/values */ \"./src/options/values.js\");\n/* harmony import */ var _helper_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helper/index */ \"./src/helper/index.js\");\n/* harmony import */ var _draw__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./draw */ \"./src/core/draw.js\");\n\r\n\r\n\r\n\r\n\r\n'use strict'\r\n\r\n\r\nlet JChart = function (ctx, config) \r\n{\r\n    if (!(this instanceof JChart)) {\r\n        return new JChart(ctx, config);\r\n    }\r\n\r\n\r\n    this.initialize(ctx, config);\r\n\r\n    this.update = function () {\r\n        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);\r\n        _draw__WEBPACK_IMPORTED_MODULE_2__[\"Draw\"].baseCanvas.call(this);\r\n    }\r\n    this.changeRatio = function () {\r\n        _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].computeSize(this.ctx);\r\n        this.baseDrawing();\r\n    }\r\n    this.getCurrentOpt = function () {\r\n        return _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options;\r\n    }\r\n    this.setLog = function (value) {\r\n        if (_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].isExist(value)) {\r\n            DEBUG_MODE = value;\r\n        }\r\n    }\r\n    this.areaShow = function () {\r\n        return _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].drawingRect(ctx);\r\n    }\r\n    return this;\r\n};\r\n\r\nJChart.computedSize = {};\r\n\r\n\r\nJChart.prototype.initialize = function (ctx, config) {\r\n    this.ctx = _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].contextValidator(ctx, config);\r\n    if (this.ctx < 0) return -1;\r\n\r\n    this.config = _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].mergeConfig(config);\r\n\r\n    _draw__WEBPACK_IMPORTED_MODULE_2__[\"Draw\"].setContext(ctx);\r\n\r\n    this.bindEvent();\r\n\r\n    this.baseDrawing();\r\n\r\n}\r\n\r\nJChart.prototype.bindEvent = function () {\r\n    let responsive = this.config.options.responsive || false;\r\n    if (responsive) {\r\n        this.bindResizeEvent();\r\n    }\r\n}\r\n\r\nJChart.prototype.baseDrawing = function () {\r\n    _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].ratioCalculator(this.ctx);\r\n\r\n    _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].computeSize(this.ctx);\r\n    _draw__WEBPACK_IMPORTED_MODULE_2__[\"Draw\"].baseCanvas.call(this);\r\n}\r\n\r\nJChart.prototype.bindResizeEvent = function () {\r\n    console.warn('responsive mode : on');\r\n\r\n    window.addEventListener('resize', function () {\r\n        this.resizingCanvas();\r\n    }.bind(this));\r\n}\r\n\r\nJChart.prototype.resizingCanvas = function () {\r\n    _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].ratioCalculator(this.ctx);\r\n\r\n    Object(_helper_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])(`resize width=${this.ctx.canvas.width} height=${this.ctx.canvas.height}`);\r\n\r\n    _helper_index__WEBPACK_IMPORTED_MODULE_1__[\"Helper\"].computeSize(this.ctx);\r\n    _draw__WEBPACK_IMPORTED_MODULE_2__[\"Draw\"].baseCanvas.call(this);\r\n}\r\n\r\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (JChart);\n\n//# sourceURL=webpack:///./src/core/engine.js?");
+
+/***/ }),
+
+/***/ "./src/helper/index.js":
+/*!*****************************!*\
+  !*** ./src/helper/index.js ***!
+  \*****************************/
+/*! exports provided: debugConsole, Helper, DEBUG_MODE */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"debugConsole\", function() { return debugConsole; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Helper\", function() { return Helper; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"DEBUG_MODE\", function() { return DEBUG_MODE; });\n/* harmony import */ var _scale_calculate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scale.calculate */ \"./src/helper/scale.calculate.js\");\n/* harmony import */ var _size_calculate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./size.calculate */ \"./src/helper/size.calculate.js\");\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ \"./src/helper/utils.js\");\n/* harmony import */ var _merge__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./merge */ \"./src/helper/merge.js\");\n/* harmony import */ var _options_values__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../options/values */ \"./src/options/values.js\");\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n'use strict'\r\n\r\nconst DEBUG_MODE = false;\r\n\r\nfunction debugConsole(str) {\r\n    if (typeof DEBUG_MODE !== 'undefined' && DEBUG_MODE)\r\n        console.log(str);\r\n}\r\n\r\n\r\nlet Helper = {};\r\nHelper.niceScale = _scale_calculate__WEBPACK_IMPORTED_MODULE_0__[\"niceScale\"];\r\nHelper.ratioCalculator = _size_calculate__WEBPACK_IMPORTED_MODULE_1__[\"ratioCalculator\"];\r\nHelper.contextValidator = _utils__WEBPACK_IMPORTED_MODULE_2__[\"contextValidator\"];\r\nHelper.isExist = _utils__WEBPACK_IMPORTED_MODULE_2__[\"isExist\"];\r\nHelper.drawingRect = _utils__WEBPACK_IMPORTED_MODULE_2__[\"drawingRect\"];\r\nHelper.mergeConfig = _merge__WEBPACK_IMPORTED_MODULE_3__[\"mergeConfig\"];\r\nHelper.computeSize = _size_calculate__WEBPACK_IMPORTED_MODULE_1__[\"computeSize\"];\r\n\r\nconsole.dir(Helper);\r\n\r\n\n\n//# sourceURL=webpack:///./src/helper/index.js?");
+
+/***/ }),
+
+/***/ "./src/helper/merge.js":
+/*!*****************************!*\
+  !*** ./src/helper/merge.js ***!
+  \*****************************/
+/*! exports provided: mergeConfig, appendConfig, objIterator */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"mergeConfig\", function() { return mergeConfig; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"appendConfig\", function() { return appendConfig; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"objIterator\", function() { return objIterator; });\n/* harmony import */ var _options_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../options/values */ \"./src/options/values.js\");\n\r\n\r\n\r\n\r\n'use strict'\r\n\r\nfunction mergeConfig(config) {\r\n    let data = config.data = config.data || {};\r\n    data.labels = data.labels || [];\r\n    data.datasets = data.datasets || [];\r\n\r\n    config.options = config.options || _options_values__WEBPACK_IMPORTED_MODULE_0__[\"defaultConfig\"].options;\r\n\r\n    config.options = appendConfig({}, _options_values__WEBPACK_IMPORTED_MODULE_0__[\"defaultConfig\"].options, config.options);\r\n    _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"]._set(config.options);\r\n    console.log(_options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"]);\r\n    return config;\r\n}\r\n\r\n\r\n/**\r\n* https://stackoverflow.com/a/20591261/9373458\r\n* merge two objects.\r\n* usage :  extend(target, obj1, obj2)\r\n* @param target\r\n* @param default\r\n* @param source \r\n*/\r\n\r\nfunction appendConfig(target) {\r\n    for (var i = 1; i < arguments.length; ++i) {\r\n        var from = arguments[i];\r\n        if (typeof from !== 'object') continue;\r\n        for (var j in from) {\r\n            if (Object.prototype.hasOwnProperty.call(from, j)) {\r\n                target[j] = typeof from[j] === 'object'\r\n                    ? appendConfig({}, target[j], from[j])\r\n                    : from[j];\r\n            }\r\n        }\r\n    }\r\n    return target;\r\n}\r\n\r\n\r\n/**\r\n *  \r\n */\r\n\r\n\r\n\r\nfunction objIterator(target) {\r\n    for (var prop in target) {\r\n        if (Object.prototype.hasOwnProperty.call(target, prop)) {\r\n            if (typeof target[prop] === 'object' && !Array.isArray(target[prop])) {\r\n                console.log('[object] ' + prop);\r\n                objIterator(target[prop]);\r\n            } else if (Array.isArray(target[prop])) {\r\n                console.log('[array] ' + prop);\r\n                var temp = target[prop];\r\n                for (var i = 0; i < temp.length; ++i) {\r\n                    if (typeof temp[i] === 'object' && !Array.isArray(temp[i])) {\r\n                        objIterator(temp[i]);\r\n                    } else {\r\n                        console.log('[' + i + '] ' + temp[i]);\r\n                    }\r\n                }\r\n            }\r\n            else if (typeof target[prop] === 'string') {\r\n                console.log('[string] ' + prop + ' ' + target[prop]);\r\n            }\r\n            else if (typeof target[prop] === 'boolean') {\r\n                console.log('[boolean] ' + prop + ' ' + target[prop]);\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n\r\n\n\n//# sourceURL=webpack:///./src/helper/merge.js?");
+
+/***/ }),
+
+/***/ "./src/helper/scale.calculate.js":
+/*!***************************************!*\
+  !*** ./src/helper/scale.calculate.js ***!
+  \***************************************/
+/*! exports provided: niceScale */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"niceScale\", function() { return niceScale; });\n\r\nfunction niceScale(min, max) {\r\n    /*\r\n        to get a 'nice number' algorithm. detail below \r\n    https://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks\r\n    */\r\n    var minPoint = min;\r\n    var maxPoint = max;\r\n    var maxTicks = 11;\r\n    var tickSpacing;\r\n    var range;\r\n    var niceMin;\r\n    var niceMax;\r\n\r\n    scaleCalculator();\r\n    return {\r\n        tickSpacing: tickSpacing,\r\n        niceMinimum: niceMin,\r\n        niceMaximum: niceMax\r\n    };\r\n\r\n    function scaleCalculator() {\r\n        range = niceNum(maxPoint - minPoint, false);\r\n        tickSpacing = niceNum(range / (maxTicks - 1), true);\r\n        niceMin =\r\n            Math.floor(minPoint / tickSpacing) * tickSpacing;\r\n        niceMax =\r\n            Math.ceil(maxPoint / tickSpacing) * tickSpacing;\r\n    }\r\n\r\n}\r\n\r\nfunction niceNum(localRange, round) {\r\n    var exponent; /** exponent of localRange */\r\n    var fraction; /** fractional part of localRange */\r\n    var niceFraction; /** nice, rounded fraction */\r\n\r\n    exponent = Math.floor(Math.log10(localRange));\r\n    fraction = localRange / Math.pow(10, exponent);\r\n\r\n    if (round) {\r\n        if (fraction < 1.5)\r\n            niceFraction = 1;\r\n        else if (fraction < 3)\r\n            niceFraction = 2;\r\n        else if (fraction < 7)\r\n            niceFraction = 5;\r\n        else\r\n            niceFraction = 10;\r\n    } else {\r\n        if (fraction <= 1)\r\n            niceFraction = 1;\r\n        else if (fraction <= 2)\r\n            niceFraction = 2;\r\n        else if (fraction <= 5)\r\n            niceFraction = 5;\r\n        else\r\n            niceFraction = 10;\r\n    }\r\n    return niceFraction * Math.pow(10, exponent);\r\n}\r\n\n\n//# sourceURL=webpack:///./src/helper/scale.calculate.js?");
+
+/***/ }),
+
+/***/ "./src/helper/size.calculate.js":
+/*!**************************************!*\
+  !*** ./src/helper/size.calculate.js ***!
+  \**************************************/
+/*! exports provided: ratioCalculator, computeSize */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ratioCalculator\", function() { return ratioCalculator; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"computeSize\", function() { return computeSize; });\n/* harmony import */ var _options_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../options/values */ \"./src/options/values.js\");\n/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index */ \"./src/helper/index.js\");\n\r\n\r\n\r\nfunction computeSize(ctx) {\r\n    if (_options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding) {\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.chartWidth = ctx.canvas.width -\r\n            (_options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.left +\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.right);\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.chartHeight = ctx.canvas.height -\r\n            (_options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.top +\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.bottom);\r\n        _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.bottomLable = {\r\n            width: _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.chartWidth + _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.left,// + computedSize.options.layout.padding.right,\r\n            height: _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.padding.bottom +\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.layout.chartHeight\r\n        };\r\n    } else {\r\n        console.error('computedSize.layout.padding is not defined')\r\n    }\r\n}\r\n\r\nfunction ratioCalculator(ctx)  /* FIXME : 초기 구동 시 여러번 \r\n    changeRatio () 호출 시마다 계속적으로 계산함.. (소수점단위??) */ {\r\n    let obj = {};\r\n    let diagonal = 0;\r\n    let parentNode = ctx.canvas.parentNode;\r\n    let parentWidth = parentNode.clientWidth;\r\n    let parentHeight = parentNode.clientHeight;\r\n\r\n    console.log(`parent width=${parentWidth} height=${parentHeight}`);\r\n\r\n    let x = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.ratio.x;\r\n    let y = _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].options.ratio.y;\r\n\r\n    Object(_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])(`RATIO = ${x}:${y}`);\r\n\r\n    let w = parentWidth;\r\n    let h = parentHeight;\r\n\r\n    diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));\r\n\r\n    Object(_index__WEBPACK_IMPORTED_MODULE_1__[\"debugConsole\"])(`diagonal=${diagonal}`);\r\n\r\n    obj.width = Math.floor(diagonal * x / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));\r\n    obj.height = Math.floor(diagonal * y / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));\r\n    console.log(`ratio width=${obj.width},height=${obj.height}`);\r\n    ctx.canvas.width = obj.width;\r\n    ctx.canvas.height = obj.height;\r\n    return obj;\r\n}\r\n\r\n\n\n//# sourceURL=webpack:///./src/helper/size.calculate.js?");
+
+/***/ }),
+
+/***/ "./src/helper/utils.js":
+/*!*****************************!*\
+  !*** ./src/helper/utils.js ***!
+  \*****************************/
+/*! exports provided: isExist, contextValidator, drawingRect */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isExist\", function() { return isExist; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"contextValidator\", function() { return contextValidator; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"drawingRect\", function() { return drawingRect; });\n/* harmony import */ var _options_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../options/values */ \"./src/options/values.js\");\n/* harmony import */ var _merge__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./merge */ \"./src/helper/merge.js\");\n\r\n\r\n\r\n\r\nfunction isExist(value) {\r\n    if (!value) return false;\r\n    return true;\r\n}\r\n\r\nfunction contextValidator(ctx, config) {\r\n    if (!this.isExist(ctx)) {\r\n        console.error('ctx undefined');\r\n        return -1;\r\n    }\r\n    if (!this.isExist(config)) {\r\n        console.error('config undefined')\r\n        return -1;\r\n    }\r\n\r\n    // TODO validate config{}\r\n    Object(_merge__WEBPACK_IMPORTED_MODULE_1__[\"objIterator\"])(config);\r\n\r\n    return ctx;\r\n}\r\n\r\nfunction drawingRect(ctx) // for debug\r\n{\r\n    return {\r\n        canvasArea: () => {\r\n            ctx.save();\r\n            ctx.strokeStyle = 'black';\r\n            ctx.lineWidth = 5;\r\n            ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);\r\n            ctx.restore();\r\n        },\r\n        chartArea: () => {\r\n            ctx.save();\r\n            ctx.strokeStyle = 'red';\r\n            ctx.lineWidth = 3;\r\n            ctx.strokeRect(_options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.padding.left,\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.padding.top,\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.chartWidth,\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.chartHeight);\r\n            ctx.restore();\r\n        },\r\n        yTickLabel: () => {\r\n            ctx.save();\r\n            ctx.strokeStyle = 'green';\r\n            ctx.lineWidth = 3;\r\n            ctx.strokeRect(30, 30, 30, _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.chartHeight);\r\n            ctx.restore();\r\n        },\r\n        bottomLabel: () => {\r\n            ctx.save();\r\n            ctx.strokeStyle = 'blue';\r\n            ctx.lineWidth = 3;\r\n            ctx.strokeRect(0,\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.padding.top + _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.chartHeight,\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.bottomLable.width,\r\n                _options_values__WEBPACK_IMPORTED_MODULE_0__[\"computedSize\"].layout.bottomLable.height);\r\n            ctx.restore();\r\n        }\r\n    }\r\n}\r\n\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack:///./src/helper/utils.js?");
+
+/***/ }),
+
+/***/ "./src/main.js":
+/*!*********************!*\
+  !*** ./src/main.js ***!
+  \*********************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _core_engine__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/engine */ \"./src/core/engine.js\");\n\r\n\r\n\r\nconsole.dir(_core_engine__WEBPACK_IMPORTED_MODULE_0__[\"default\"]);\r\n\r\nif (typeof window !== 'undefined') {\r\n\twindow.JChart = _core_engine__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\r\n}\n\n//# sourceURL=webpack:///./src/main.js?");
+
+/***/ }),
+
+/***/ "./src/options/values.js":
+/*!*******************************!*\
+  !*** ./src/options/values.js ***!
+  \*******************************/
+/*! exports provided: computedSize, dataPoints, globalDefaults, defaultConfig */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"computedSize\", function() { return computedSize; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dataPoints\", function() { return dataPoints; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"globalDefaults\", function() { return globalDefaults; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"defaultConfig\", function() { return defaultConfig; });\n\r\nlet dataPoints = [{\r\n    xPoint: [],\r\n    yPoint: []\r\n}];\r\n\r\n// usage :  extend(target, obj1, obj2)\r\n/* 실제 반영 할 options ( layout-padding.., scales) */\r\nlet computedSize = {\r\n    _set(values){\r\n        this.options = values;\r\n    }\r\n};\r\n\r\nconst globalDefaults =\r\n{\r\n    defaultColor: 'rgba(0,0,0,0.1)',\r\n    defaultFontColor: '#666',\r\n    defaultFontFamily: \"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif\",\r\n    defaultFontSize: 12,\r\n    defaultFontStyle: 'normal',\r\n    defaultLineHeight: 1.2,\r\n    titleFontStyle: 'bold',\r\n    titleSpacing: 2,\r\n    titleMarginBottom: 6,\r\n    titleFontColor: '#fff',\r\n    titleAlign: 'left',\r\n    gridLineColor: 'rgba(0,0,0,1)',\r\n    gridLineWidth: 0.5,\r\n    curveLineColor: 'green',\r\n    dataPointColor: 'blue'\r\n};\r\n\r\n\r\n\r\n/* JChart 생성시 config가 비어있을 경우 이 defaultConfig 값을 사용 */\r\nconst defaultConfig =\r\n{\r\n    options: {\r\n        responsive: true,\r\n        ratio: {\r\n            x: 21,\r\n            y: 9\r\n        },\r\n        layout: {\r\n            padding: {\r\n                top: 40.5,\r\n                right: 40,\r\n                bottom: 60.5,\r\n                left: 65.5\r\n            }\r\n        },\r\n        scales: {\r\n            yAxes: [{\r\n                display: true,\r\n                scaleLabel: {\r\n                    display: true,\r\n                },\r\n                gridLines: {\r\n                    color: globalDefaults.gridlineColor,\r\n                    lineWidth: globalDefaults.gridLineWidth\r\n                }\r\n            }],\r\n            xAxes: [{\r\n                display: true,\r\n                scaleLabel: {\r\n                    display: true,\r\n                },\r\n                gridLines: {\r\n                    color: globalDefaults.gridlineColor,\r\n                    lineWidth: globalDefaults.gridLineWidth\r\n                }\r\n            }]\r\n        }\r\n    },\r\n    /*  incomplete\r\n    elements:{},\r\n    events: [\r\n        'mousemove',\r\n        'mouseout',\r\n        'click',\r\n        'touchstart',\r\n        'touchmove'\r\n    ],\r\n    hover: { \r\n        onHover: null,\r\n        mode: 'nearest',\r\n        intersect: true,\r\n        animationDuration: 400\r\n    },\r\n    \r\n    onClick: null,\r\n    maintainAspectRatio: true,\r\n    responsiveAnimationDuration: 0\r\n    */\r\n};\r\n\r\nObject.freeze(defaultConfig);\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack:///./src/options/values.js?");
+
+/***/ })
+
+/******/ });

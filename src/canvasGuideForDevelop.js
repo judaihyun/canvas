@@ -7,6 +7,10 @@ Guide = function(ctx, canvas)
 {
     let me = this;
     let drawingSurfaceImageData,
+        posEl,
+        drawWidthEl
+        ctx,
+        canvas, 
         mousePos = {},
         dragging = false;
 
@@ -79,7 +83,7 @@ Guide = function(ctx, canvas)
         if(dragging)
         {
             restoreDrawingSurface();
-            let loc = windowToCanvas(e.clientX, e.clientY);
+            loc = windowToCanvas(e.clientX, e.clientY);
             ctx.save();
             ctx.strokeStyle = 'green';
             ctx.lineWidth = 2;
