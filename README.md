@@ -7,4 +7,4 @@
 </p>
 
 
-<a href='https://judaihyun.github.io/index.html'>link</a>
+<a href='https://judaihyun.github.io/#'>link</a>
