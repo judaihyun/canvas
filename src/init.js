@@ -1,3 +1,6 @@
+
+import Guide from './canvasGuideForDevelop'
+
 let config = 
 {
     type:'origin',
@@ -60,11 +63,9 @@ document.addEventListener('DOMContentLoaded', function()
     let ctx = canvas.getContext('2d');
 
     
-    /*
     let guide = new Guide(ctx, canvas);
     guide.setDrawWidthEl(drawWidth);
     guide.setPosEl(posDiv);
-    */
 
 
     let myChart = new JChart(ctx, config);

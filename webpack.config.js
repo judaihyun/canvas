@@ -5,8 +5,7 @@ module.exports = {
     mode: 'development',
     entry: {
         main:'./src/main.js',
-        init:'./src/init.js',
-        guide: './src/canvasGuideForDevelop.js',
+        init:'./src/init.js'
     },
     output: {
         filename: '[name].bundles.js',
