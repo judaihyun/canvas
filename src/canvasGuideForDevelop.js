@@ -10,9 +10,9 @@ Guide = function(ctx, canvas)
         posEl,
         drawWidthEl
         ctx,
-        canvas;
-    let mousePos = {};
-    let dragging = false;
+        canvas, 
+        mousePos = {},
+        dragging = false;
 
     
 
@@ -103,10 +103,10 @@ Guide = function(ctx, canvas)
         dragging = false;
     },false);
 
+    /*
     return{
         setDrawWidthEl, setPosEl
     }
+    */
 
 };
-
-export default Guide;

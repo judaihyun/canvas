@@ -1,89 +1,81 @@
-
-import {computedSize} from '../options/values';
-import {Helper, DEBUG_MODE, debugConsole} from '../helper/index';
-import {Draw} from './draw';
-
-'use strict'
+import { computedSize } from '../options/values';
+import { Helper, DEBUG_MODE, debugConsole } from '../helper/index';
+import Draw from './draw';
 
 
-let JChart = function (ctx, config) 
-{
-    if (!(this instanceof JChart)) {
-        return new JChart(ctx, config);
-    }
+const JChart = function (ctx, config) {
+	if (!(this instanceof JChart)) {
+		return new JChart(ctx, config);
+	}
 
 
-    this.initialize(ctx, config);
+	this.initialize(ctx, config);
 
-    this.update = function () {
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        Draw.baseCanvas.call(this);
-    }
-    this.changeRatio = function () {
-        Helper.computeSize(this.ctx);
-        this.baseDrawing();
-    }
-    this.getCurrentOpt = function () {
-        return computedSize.options;
-    }
-    this.setLog = function (value) {
-        if (Helper.isExist(value)) {
-            DEBUG_MODE = value;
-        }
-    }
-    this.areaShow = function () {
-        return Helper.drawingRect(ctx);
-    }
-    return this;
+	this.update = function () {
+		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+		Draw.baseCanvas.call(this);
+	};
+	this.changeRatio = function () {
+		Helper.computeSize(this.ctx);
+		this.baseDrawing();
+	};
+	this.getCurrentOpt = function () {
+		return computedSize.options;
+	};
+	this.setLog = function (value) {
+		if (Helper.isExist(value)) {
+			DEBUG_MODE = value;
+		}
+	};
+	this.areaShow = function () {
+		return Helper.drawingRect(ctx);
+	};
+	return this;
 };
 
-JChart.computedSize = {};
-
-
 JChart.prototype.initialize = function (ctx, config) {
-    this.ctx = Helper.contextValidator(ctx, config);
-    if (this.ctx < 0) return -1;
+	this.ctx = Helper.contextValidator(ctx, config);
+	if (this.ctx < 0) return -1;
 
-    this.config = Helper.mergeConfig(config);
+	this.config = Helper.mergeConfig(config);
 
-    Draw.setContext(ctx);
+	Draw.setContext(ctx);
 
-    this.bindEvent();
+	this.bindEvent();
 
-    this.baseDrawing();
-
-}
+	this.baseDrawing();
+};
 
 JChart.prototype.bindEvent = function () {
-    let responsive = this.config.options.responsive || false;
-    if (responsive) {
-        this.bindResizeEvent();
-    }
-}
+	const responsive = this.config.options.responsive || false;
+	if (responsive) {
+		this.bindResizeEvent();
+	}
+};
 
 JChart.prototype.baseDrawing = function () {
-    Helper.ratioCalculator(this.ctx);
+	Helper.ratioCalculator(this.ctx);
 
-    Helper.computeSize(this.ctx);
-    Draw.baseCanvas.call(this);
-}
+	Helper.computeSize(this.ctx);
+	Draw.baseCanvas.call(this);
+};
 
 JChart.prototype.bindResizeEvent = function () {
-    console.warn('responsive mode : on');
+	console.warn('responsive mode : on');
 
-    window.addEventListener('resize', function () {
-        this.resizingCanvas();
-    }.bind(this));
-}
+	window.addEventListener('resize', () => {
+		this.resizingCanvas();
+	});
+};
 
 JChart.prototype.resizingCanvas = function () {
-    Helper.ratioCalculator(this.ctx);
+	Helper.ratioCalculator(this.ctx);
 
-    debugConsole(`resize width=${this.ctx.canvas.width} height=${this.ctx.canvas.height}`);
+	debugConsole(`resize width=${this.ctx.canvas.width} height=${this.ctx.canvas.height}`);
 
-    Helper.computeSize(this.ctx);
-    Draw.baseCanvas.call(this);
-}
+	Helper.computeSize(this.ctx);
+	Draw.baseCanvas.call(this);
+};
 
 
 export default JChart;
