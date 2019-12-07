@@ -1,6 +1,7 @@
 
 import { dataPoints, globalDefaults, computedSize } from '../options/values';
-import { debugConsole, Helper } from '../helper/index';
+import { debugConsole } from '../errorControl/errorPrint';
+import { Helper } from '../helper/index';
 
 const Draw = {
 	drawOptions() {
