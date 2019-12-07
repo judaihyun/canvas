@@ -1,13 +1,12 @@
 
 import { dataPoints, globalDefaults, computedSize } from '../options/values';
-import { debugConsole } from '../errorControl/errorPrint';
+import debugConsole from '../errorControl/errorPrint';
 import { Helper } from '../helper/index';
 
 const Draw = {
 	drawOptions() {
 		const ctx = this.getContext();
 		const { width, height } = ctx.canvas;
-		console.log({ width, height });
 
 		const { chartWidth, chartHeight } = computedSize.options.layout,
 			leftPadding = computedSize.options.layout.padding.left,

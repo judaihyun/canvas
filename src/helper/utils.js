@@ -63,5 +63,4 @@ function drawingRect(ctx) /* for debug */ {
 }
 
 
-
 export { isExist, contextValidator, drawingRect };

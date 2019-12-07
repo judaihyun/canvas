@@ -1,22 +1,22 @@
 import { computedSize } from '../options/values';
-import { debugConsole } from '../errorControl/errorPrint';
+import debugConsole from '../errorControl/errorPrint';
 
 function computeSize(ctx) {
 	if (computedSize.options.layout.padding) {
-		computedSize.options.layout.chartWidth = ctx.canvas.width -
-            (computedSize.options.layout.padding.left +
-                computedSize.options.layout.padding.right);
-		computedSize.options.layout.chartHeight = ctx.canvas.height -
-            (computedSize.options.layout.padding.top +
-                computedSize.options.layout.padding.bottom);
+		computedSize.options.layout.chartWidth = ctx.canvas.width 
+			- (computedSize.options.layout.padding.left 
+			+ computedSize.options.layout.padding.right);
+		computedSize.options.layout.chartHeight = ctx.canvas.height 
+			- (computedSize.options.layout.padding.top 
+			+ computedSize.options.layout.padding.bottom);
 		computedSize.options.layout.bottomLable = {
-			width: computedSize.options.layout.chartWidth + 
-				computedSize.options.layout.padding.left,// + computedSize.options.layout.padding.right,
-			height: computedSize.options.layout.padding.bottom +
-                computedSize.options.layout.chartHeight,
+			width: computedSize.options.layout.chartWidth 
+			+ computedSize.options.layout.padding.left, // + computedSize.options.layout.padding.right,
+			height: computedSize.options.layout.padding.bottom 
+			+ computedSize.options.layout.chartHeight,
 		};
 	} else {
-		console.error('computedSize.layout.padding is not defined')
+		console.error('computedSize.layout.padding is not defined');
 	}
 }
 
@@ -37,12 +37,12 @@ function ratioCalculator(ctx) {
 	const w = parentWidth;
 	const h = parentHeight;
 
-	diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
+	diagonal = Math.sqrt((w ** 2) + (h ** 2));
 
 	debugConsole(`diagonal=${diagonal}`);
 
-	obj.width = Math.floor((diagonal * x) / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
-	obj.height = Math.floor((diagonal * y) / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+	obj.width = Math.floor((diagonal * x) / Math.sqrt((x ** 2) + (y ** 2)));
+	obj.height = Math.floor((diagonal * y) / Math.sqrt((x ** 2) + (y ** 2)));
 	console.log(`ratio width=${obj.width},height=${obj.height}`);
 	ctx.canvas.width = obj.width;
 	ctx.canvas.height = obj.height;

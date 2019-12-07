@@ -1,13 +1,13 @@
 
 import { isExist, contextValidator, drawingRect } from './utils';
-import {niceScale} from './scale.calculate';
-import {ratioCalculator, computeSize} from './size.calculate';
-import {mergeConfig} from './merge';
+import niceScale from './scale.calculate';
+import { ratioCalculator, computeSize } from './size.calculate';
+import { mergeConfig } from './merge';
 
 
 const DEBUG_MODE = false;
 
-let Helper = {};
+const Helper = {};
 Helper.niceScale = niceScale;
 Helper.ratioCalculator = ratioCalculator;
 Helper.contextValidator = contextValidator;

@@ -1,7 +1,7 @@
 import { computedSize } from '../options/values';
 import { Helper, DEBUG_MODE } from '../helper/index';
 import Draw from './draw';
-import { debugConsole } from '../errorControl/errorPrint';
+import debugConsole from '../errorControl/errorPrint';
 
 
 const JChart = function (ctx, config) {
